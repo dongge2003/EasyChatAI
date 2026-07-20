@@ -64,7 +64,6 @@ import FileBgIcon from "data-base64:~assets/icon_file_bg.svg";
 import {LocaleContext} from "~libs/i18n";
 let abortController:AbortController;
 
-let popIsShow = false;
 let currentBotsTemp:Ms = [];
 const MAX_FILE_SIZE = 20 * 1024 * 1024;//20MB
 /**
@@ -878,9 +877,6 @@ function ConversationContent() {
     const [isHaveQuotingText, setIsHaveQuotingText] = useState(false);
     const [inputValue, setInputValue] = useState('');
     const [inputWarnShow, setInputWarnShow] = useState(false);
-    const [isPromptPopShow, setIsPromptPopShow] = useState(false);
-    const [quickPromptBtn, setQuickPromptBtn] = useState<[number, string]>([AskPromptId, t('conversation.askAI')]);
-    const promptPop = useRef(null);
     const [promptVisibleTag, setPromptVisibleTag] = useState<number[]>([]);
     const [isUploadAttachment, setIsUploadAttachment] = useState(false);
     const [isUploading, setIsUploading] = useState<[boolean, boolean, string, string, Map<string, string>, FileTypes, File | null]>([false, false, '', '', new Map(), FileTypes.OTHERS, null]);
@@ -961,26 +957,11 @@ function ConversationContent() {
 
     useEffect(() => {
         chrome.runtime.onMessage.addListener(handleMessage);
-        document.body.addEventListener('mousedown', handleMouseDown);
 
         return () => {
             chrome.runtime.onMessage.removeListener(handleMessage);
-            document.body.removeEventListener('mousedown', handleMouseDown);
         };
     }, []);
-
-    const handleMouseDown = (e: MouseEvent) => {
-        Logger.log(`mousedown handleMouseDown===============${popIsShow}`);
-        if (popIsShow) {
-            const popComponent = promptPop.current;
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-            if (popComponent && !popComponent.contains(e.target)) {
-                Logger.log(`mousedown closePromptPopup=============${popIsShow}`);
-                setIsPromptPopShow(false);
-            }
-        }
-    };
 
     function handleMessage(message: any) {
         switch (message.action) {
@@ -1022,9 +1003,8 @@ function ConversationContent() {
         }
     }
 
-    async function itemClick(car: any, index: number, isQuotClick: boolean, e: React.MouseEvent<HTMLDivElement>) {
+    async function itemClick(car: any, index: number, e: React.MouseEvent<HTMLDivElement>) {
         e.stopPropagation();
-        const inputText = await getLatestState(setInputValue);
         const quotText = await getLatestState(setQuotingText);
         const isQuotShow = await getLatestState(setIsHaveQuotingText);
         const isUploadingInfo = await getLatestState(setIsUploading);
@@ -1032,26 +1012,10 @@ function ConversationContent() {
             void message.warning(t('conversation.fileUploading'));
             return;
         }
-        if(isQuotClick){
-            if(isUploadingInfo[0] && isUploadingInfo[4].size>0){
-                goToAskEngine(null, car, undefined, true, [isUploadingInfo[2], isUploadingInfo[3], isUploadingInfo[4], isUploadingInfo[5], isUploadingInfo[6]]);
-            }else if (isQuotShow && quotText[1]) {
-                goToAskEngine(quotText[1], car, undefined);
-            }
-        }else{
-            setQuickPromptBtn([car.id, car.title]);
-            if(inputText && isUploadingInfo[0] && isUploadingInfo[4].size>0){
-                goToAskEngine(inputText, car, undefined, true, [isUploadingInfo[2], isUploadingInfo[3], isUploadingInfo[4], isUploadingInfo[5], isUploadingInfo[6]]);
-            }else if (inputText && isQuotShow && quotText[1]) {
-                goToAskEngine(inputText, car, quotText[1]);
-            } else if (inputText) {
-                goToAskEngine(inputText, car, undefined);
-            } else if (isQuotShow && quotText[1]) {
-                goToAskEngine(quotText[1], car, undefined);
-            } else {
-                //setInputWarnShow(true)
-            }
-            setIsPromptPopShow(false);
+        if(isUploadingInfo[0] && isUploadingInfo[4].size>0){
+            goToAskEngine(null, car, undefined, true, [isUploadingInfo[2], isUploadingInfo[3], isUploadingInfo[4], isUploadingInfo[5], isUploadingInfo[6]]);
+        }else if (isQuotShow && quotText[1]) {
+            goToAskEngine(quotText[1], car, undefined);
         }
     }
 
@@ -1060,14 +1024,13 @@ function ConversationContent() {
         const inputText = await getLatestState(setInputValue);
         const quotText = await getLatestState(setQuotingText);
         const isQuotShow = await getLatestState(setIsHaveQuotingText);
-        const quickPrompt = await getLatestState(setQuickPromptBtn);
         const isUploadingInfo = await getLatestState(setIsUploading);
         if(isUploadingInfo[0] && isUploadingInfo[1]){
             message.warning(t('conversation.fileUploading'));
             return;
         }
         if (inputText && inputText.trim()) {
-            const card = quickPrompt[0]==AskPromptId?AskPromptData:cards.find((card) => card.id === quickPrompt[0]);
+            const card = AskPromptData;
             if(isUploadingInfo[0] && isUploadingInfo[4].size>0){
                 goToAskEngine(inputText, card, undefined, true, [isUploadingInfo[2], isUploadingInfo[3], isUploadingInfo[4], isUploadingInfo[5], isUploadingInfo[6]]);
             }else if (isQuotShow && quotText[1]) {
@@ -1133,10 +1096,6 @@ function ConversationContent() {
         } else if (e.keyCode === 13) {
             e.preventDefault();
             void goAskAi();
-        } else if (e.key === '/') {
-            e.preventDefault();
-            popIsShow = true;
-            setIsPromptPopShow(true);
         }
     };
 
@@ -1246,8 +1205,8 @@ function ConversationContent() {
         setUploadBackgroundColor('#FFFFFF');
     };
 
-    const PopupPrompt = ({isQuotClick}) => (
-        <div ref={promptPop} style={{
+    const PopupPrompt = () => (
+        <div style={{
             maxHeight: '300px',
             minWidth: '224px',
             background: '#FFFFFF',
@@ -1256,20 +1215,20 @@ function ConversationContent() {
         }}>
             <List
                 itemLayout="vertical"
-                dataSource={(!isQuotClick && quickPromptBtn[0] != AskPromptId) ? [AskPromptData, ...cards] : cards}
+                dataSource={cards}
                 bordered={false}
                 split={false}
                 style={{
                     maxHeight: '300px',
                     overflow: 'auto',
-                    display: isHaveQuotingText && !isQuotClick ? 'none' : 'block'
+                    display: 'block'
                 }}
                 className={'hideScrollBar'}
                 renderItem={(car, index) => {
                     const ItemIcon = getIconSrc(car.imageKey);
                     return (
                         <List.Item style={{height: '40px'}} className={'hover:bg-accent-light box-border'}
-                            onClick={(e) => itemClick(car, index, isQuotClick, e)}>
+                            onClick={(e) => itemClick(car, index, e)}>
                             <div style={{
                                 display: 'flex',
                                 justifyContent: 'start',
@@ -1335,8 +1294,8 @@ function ConversationContent() {
                                 Logger.log(`tags=============${tags}`);
                                 setPromptVisibleTag(tags);
                             }}
-                            itemClick={(car: any, index: number, e: React.MouseEvent<HTMLDivElement>) => itemClick(car, index, true, e)}></PromptTags>
-                        <Popover title={null} align={{offset: [0, 20]}} content={<PopupPrompt isQuotClick={true}/>}
+                            itemClick={(car: any, index: number, e: React.MouseEvent<HTMLDivElement>) => itemClick(car, index, e)}></PromptTags>
+                        <Popover title={null} align={{offset: [0, 20]}} content={<PopupPrompt/>}
                             arrow={false} placement='topLeft' overlayInnerStyle={{
                                 paddingLeft: 0,
                                 paddingRight: 0,
@@ -1379,7 +1338,7 @@ function ConversationContent() {
                         }}/>
                     </div>
                     <div className={'w-auto mr-[8px]'}>
-                        <PromptTags cards={isUploading[5]== FileTypes.Image?imageCards:pdfCards} onVisibleTagChange={()=>{/* do nothing */}} itemClick={(car: any, index: number, e: React.MouseEvent<HTMLDivElement>) => itemClick(car, index, true, e)}></PromptTags>
+                        <PromptTags cards={isUploading[5]== FileTypes.Image?imageCards:pdfCards} onVisibleTagChange={()=>{/* do nothing */}} itemClick={(car: any, index: number, e: React.MouseEvent<HTMLDivElement>) => itemClick(car, index, e)}></PromptTags>
                     </div>
                     <div className={'w-[calc(100%-16px)] h-[1px] bg-page-bg mt-[8px]'}/>
                 </div>}
@@ -1400,25 +1359,8 @@ function ConversationContent() {
                     autoSize={{minRows: 3, maxRows: 6}}
                 />
                 <div className={'w-full h-[23px] flex flex-row-reverse justify-start items-center mb-[8px]'}>
-                    <Popover trigger={"click"} title={null} align={{offset: [0, 20]}} overlayInnerStyle={{
-                        paddingLeft: 0,
-                        paddingRight: 0,
-                        paddingTop: '8px',
-                        paddingBottom: '8px'
-                    }} content={<PopupPrompt isQuotClick={false}/>} arrow={false} placement='topLeft'
-                    open={isPromptPopShow} onOpenChange={(visibleAskPop) => {
-                        Logger.log(`visibleAskPop=============${visibleAskPop}`);
-                        popIsShow = visibleAskPop;
-                        Logger.log(`popIsShow=============${popIsShow}`);
-                        setIsPromptPopShow(visibleAskPop);
-                    }}>
-                        <img className={'w-[20px] h-[20px] mr-[12px] cursor-pointer'} src={TriangleIcon} alt=''/>
-                    </Popover>
-                    <img className={'w-[20px] h-[20px] cursor-pointer'} src={SendMsgIcon} alt=''
+                    <img className={'w-[20px] h-[20px] mr-[12px] cursor-pointer'} src={SendMsgIcon} alt=''
                         onClick={() => goAskAi()}/>
-                    <div
-                        className={'flex justify-center items-center h-[25px] text-tertiary bg-surface-subtle rounded-[8px] px-[8px] py-[4px] text-[12px] font-[400] mr-[8px] whitespace-nowrap cursor-pointer'}
-                        onClick={() => goAskAi()}>{`⏎ ${t('conversation.askAI')}`}</div>
                 </div>
             </div>
         </div>

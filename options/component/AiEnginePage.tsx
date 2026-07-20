@@ -5,7 +5,7 @@ import {ItemTypes} from "~options/component/ItemTypes";
 import {Card, getImageSrc} from "~options/component/Card";
 import IconPlus from "data-base64:~assets/icon_plus.svg";
 import {PromptDatas} from "~options/constant/PromptDatas";
-import {Button, Dropdown, Modal, Popover, Space} from "antd";
+import {Button, Dropdown, Modal, Popover, Space, Switch} from "antd";
 import EditPlusIcon from "data-base64:~assets/icon_add_plus.svg";
 import QuestionIcon from "data-base64:~assets/icon_question.svg";
 import CTooltip from "~component/common/CTooltip";
@@ -30,6 +30,7 @@ export function getIconSrc(key?: string) {
 }
 export default function AiEnginePage() {
     const [cards, setCards] = useStorage('promptData', PromptDatas);
+    const [showSelectionToolbar, setShowSelectionToolbar] = useStorage('ShowSelectionToolbar', true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isReadOnly, setIsReadOnly] = useState(false);
     const [language, setLanguage] = useState('English');
@@ -72,32 +73,28 @@ export default function AiEnginePage() {
     };
 
     const deleteConfirm = (id: string) => {
-        const {card, index} = findCard(id);
-        if (card.itemType === PromptTypes.CUSTOM) {
-            deletePrompt.confirm({
-                title: t('common.delete'),
-                icon: <img src={IconDeleteRed} className={'h-[24px] w-[24px] me-[4px]'} alt=''/>,
-                content: t('shortcutMenu.deleteConfirm'),
-                okText: t('common.delete'),
-                okButtonProps: {
-                    style: {backgroundColor: '#FF2D10', borderColor: '#FF2D10'},
-                    className: 'hover:hover:bg-red-700 hover:hover:bg-red-700'
-                },
-                cancelText: t('common.cancel'),
-                onOk() {
-                    void setCards(
-                        update(cards, {
-                            $splice: [
-                                [index, 1],
-                            ],
-                        }),
-                    );
-                    void messageApi.success(t('shortcutMenu.deleteSuccess'));
-                }
-            });
-        } else {
-            void messageApi.warning(t('shortcutMenu.cannotDeleteDefault'));
-        }
+        const {index} = findCard(id);
+        deletePrompt.confirm({
+            title: t('common.delete'),
+            icon: <img src={IconDeleteRed} className={'h-[24px] w-[24px] me-[4px]'} alt=''/>,
+            content: t('shortcutMenu.deleteConfirm'),
+            okText: t('common.delete'),
+            okButtonProps: {
+                style: {backgroundColor: '#FF2D10', borderColor: '#FF2D10'},
+                className: 'hover:hover:bg-red-700 hover:hover:bg-red-700'
+            },
+            cancelText: t('common.cancel'),
+            onOk() {
+                void setCards(
+                    update(cards, {
+                        $splice: [
+                            [index, 1],
+                        ],
+                    }),
+                );
+                void messageApi.success(t('shortcutMenu.deleteSuccess'));
+            }
+        });
     };
     const findCard = useCallback(
         (id: string) => {
@@ -274,6 +271,16 @@ export default function AiEnginePage() {
                 className={'bg-white shadow-[0_4px_12px_0px_rgba(0,0,0,.2)] overflow-hidden rounded-tl-[24px] rounded-tr-[24px] px-[56px] py-[32px] mt-[32px] flex flex-col'}>
                 <div className={'text-[#333333] font-[700] text-[20px] justify-start'}>{t('shortcutMenu.title')}</div>
                 <div className={'text-[#5E5E5E] font-[400] text-[12px] justify-start mt-[8px]'}>{t('shortcutMenu.description')}</div>
+
+                {/* Selection Toolbar Toggle */}
+                <div className={'flex flex-row items-center justify-between py-[16px] mt-[16px] border-t border-[#F3F4F9]'}>
+                    <div className={'flex flex-col'}>
+                        <div className={'text-[#333333] font-[600] text-[15px]'}>{t('selectionToolbar.enable')}</div>
+                        <div className={'text-[#5E5E5E] font-[400] text-[12px] mt-[2px]'}>{t('selectionToolbar.description')}</div>
+                    </div>
+                    <Switch checked={showSelectionToolbar} onChange={(checked) => void setShowSelectionToolbar(checked)} />
+                </div>
+
                 <div ref={drop}>
                     {cards.map((card) => (
                         <Card

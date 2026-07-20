@@ -123,6 +123,10 @@ const en: I18nMessages = {
     "validation.fetchFailed": "Failed to fetch models: {message}",
     "validation.foundModels": "Found {count} models",
 
+    // ============ Selection Toolbar Settings ============
+    "selectionToolbar.enable": "Enable Selection Toolbar",
+    "selectionToolbar.description": "Show the floating toolbar when selecting text on pages",
+
     // ============ AI Engine / Shortcut Menu Page ============
     "shortcutMenu.title": "Shortcut Menu",
     "shortcutMenu.description": "Customize your menu of actions by editing, rearranging through dragging, and including custom actions below.",

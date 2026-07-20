@@ -123,6 +123,10 @@ const zh: I18nMessages = {
     "validation.fetchFailed": "获取模型失败：{message}",
     "validation.foundModels": "找到 {count} 个模型",
 
+    // ============ Selection Toolbar Settings ============
+    "selectionToolbar.enable": "显示选中文字工具栏",
+    "selectionToolbar.description": "在页面上选中文字时显示浮动工具栏",
+
     // ============ AI Engine / Shortcut Menu Page ============
     "shortcutMenu.title": "快捷菜单",
     "shortcutMenu.description": "自定义你的操作菜单，可以编辑、拖拽排序，以及添加自定义操作。",

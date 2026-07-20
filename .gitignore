@@ -38,4 +38,6 @@ dist/
 # AI
 .claude/
 CLAUDE.md
+.codex/
+AGENTS.md
 

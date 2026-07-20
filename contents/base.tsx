@@ -24,10 +24,8 @@ import popupSettingIcon from "data-base64:~assets/icon_popup_setting.svg";
 import DingSelectIcon from "data-base64:~assets/icon_ding_select.svg";
 import DingUnSelectIcon from "data-base64:~assets/icon_ding_unselect.svg";
 import update from "immutability-helper";
-import SmallAskAiIcon from "data-base64:~assets/icon_ask_ai_small.svg";
 import askCloseIcon from "data-base64:~assets/icon_ask_close.svg";
 import {IAskAi, openPanelAskAi} from "~libs/open-ai/open-panel";
-import PupHeaderIcon from "data-base64:~assets/icon_pup_header.svg";
 import {SearchBar} from "~options/component/SearchBar";
 import {Logger} from "~utils/logger";
 import {BASE_ZINDEX} from "~component/common/CPopover";
@@ -89,6 +87,16 @@ export default function Base() {
     const [cards, setCards] = useStorage('promptData', PromptDatas);
     const [quickConfigOpen, setQuickConfigOpen] = useState(false);
     const [closeHostNames, setCloseHostNames] = useStorage<string[]>('CloseHostNamesData', []);
+    const [showSelectionToolbar] = useStorage('ShowSelectionToolbar', true);
+    const showSelectionToolbarRef = useRef(showSelectionToolbar);
+
+    useEffect(() => {
+        showSelectionToolbarRef.current = showSelectionToolbar;
+        if (!showSelectionToolbar) {
+            setShowTool(false);
+        }
+    }, [showSelectionToolbar]);
+
     const appendCloseHostName = (newHostName: string) => {
         setCloseHostNames(prevNames => {
             if (!prevNames?.includes(newHostName)) {
@@ -118,7 +126,7 @@ export default function Base() {
 
             const rect = range?.getBoundingClientRect();
 
-            let x = (rect?.left ?? 0) + window.scrollX;
+            let x = (rect?.left ?? 0);
 
             let toolTipWidth = 280;
 
@@ -130,7 +138,7 @@ export default function Base() {
                 x = window.innerWidth - toolTipWidth - 10;
             }
 
-            setToolPositions([x, (rect?.bottom ?? 0) + window.scrollY + 10]);
+            setToolPositions([x, (rect?.bottom ?? 0) + 10]);
             void chrome.runtime.sendMessage({action: MESSAGE_ACTION_SET_QUOTING_SELECTION_TEXT, data:selectionText});
             void showToolByConfig();
             setVisibleAsk(false);
@@ -149,7 +157,7 @@ export default function Base() {
         Logger.log('hostname================', hostname);
         Logger.log('closeHostNames================', hostNames);
         Logger.log('!closeHostNames.includes(hostname)======',!hostNames?.includes(hostname));
-        if (!hostNames?.includes(hostname) && !tempHostNames.includes(hostname)) {
+        if (!hostNames?.includes(hostname) && !tempHostNames.includes(hostname) && showSelectionToolbarRef.current) {
             setShowTool(true);
         }
     }
@@ -195,12 +203,6 @@ export default function Base() {
         setAskInputValue(selectedText);
         setShowAskContent(false);
         setSelectedText('');
-    };
-
-    const quickBarHeaderClick = function (e: React.MouseEvent<HTMLImageElement, MouseEvent>) {
-        e.stopPropagation();
-        Logger.log("askAi=========");
-        showAskBar(true);
     };
 
     async function sendAskAIDefault() {
@@ -440,7 +442,8 @@ export default function Base() {
                 top: `${toolPositions[1]}px`,
                 display: showTool ? 'block' : 'none',
                 padding: '8px',
-            }} className={'relative'} onMouseLeave={() => {
+                zIndex: 2147483647,
+            }} className={'fixed'} onMouseLeave={() => {
                 void closeAsKQuickBtn();
             }}>
                 <div style={{
@@ -448,14 +451,6 @@ export default function Base() {
                     flexDirection: 'row',
                 }}
                 className={'bg-white shadow-[0_4px_12px_0px_rgba(0,0,0,.2)] z-[1] overflow-hidden rounded-[8px] h-[32px] py-[4px] items-center'}>
-                    <div
-                        className={'pl-[4px] box-border flex justify-center cursor-pointer items-center'}>
-                        <div className={'flex w-[28px] h-[28px] rounded-[4px] justify-center items-center bg-white hover:bg-[#F2F5FF]'}>
-                            <img onClick={quickBarHeaderClick} className={'block w-[20px] h-[20px] mr-[4px]'}
-                                src={PupHeaderIcon} alt=''/>
-                        </div>
-                        <div className={"w-[1px] h-[24px] bg-[#000000] opacity-20 mr-[4px]"}></div>
-                    </div>
                     <div >
                         <SearchBar cards={cards} popupPrompt={popupPrompt} isVisible={visiblePop ?? false} onOpenChange={(visiblePopup) =>{
                             if(visiblePopup) {
@@ -467,18 +462,6 @@ export default function Base() {
                             // @ts-expect-error
                             setVisiblePop(visiblePopup);}} onItemClick={(id)=>{goToAskEngine(selectedText,id,null);}}/>
                     </div>
-                    <div className={"w-[1px] h-[24px] bg-[#000000] opacity-20 ms-[8px]"}></div>
-
-                    <div onClick={() => {showAskBar();}} className={"cursor-pointer flex justify-center items-center"}>
-                        <img className={'w-[20px] h-[20px] ms-[8px] me-[8px] cursor-pointer'} src={SmallAskAiIcon}
-                            onMouseEnter={() => {
-                                setVisibleAsk(true);
-                            }} alt=''/>
-                        {visibleAsk &&
-                            <div className={'text-[#0A4DFE] text-[12px] font-[400] justify-start items-center me-[16px]'}>⌘
-                                + J</div>}
-                    </div>
-
                 </div>
                 <Popover zIndex={BASE_ZINDEX+100} overlayInnerStyle={{paddingLeft: 0, paddingRight:0,paddingTop:'8px',paddingBottom:'8px'}} title={null} content={popupQuickPromptConfig} arrow={false} placement='bottomLeft' open={quickConfigOpen}
                     onOpenChange={(isOpen) => {
@@ -493,18 +476,6 @@ export default function Base() {
             className={'fixed group right-[-50px] hover:quick-text:block transition-all bg-white hover:bg-[#CEDBFF] hover:right-0 cursor-pointer bottom-[18%] flex items-center rounded-l-[20px] h-[40px] w-[90px] shadow-[0_4px_24px_0px_rgba(0,0,0,.2)]'}>
             <img className={'block  w-[24px] h-[24px] ml-[8px]'} src={Icon} alt=''/>
             <div className={'quick-text text-[15px] hidden group-hover:block ml-[8px] text-[#0A4DFE]'}>⌘ + I</div>
-        </div>
-
-        <div onClick={() => showAskBar()}
-            className={'fixed right-[6px] transition-all hover:right-[8px] cursor-pointer bottom-[calc(18%+65px)] flex justify-center items-center bg-white rounded-full h-[32px] w-[32px] shadow-xl transform hover:scale-110'}>
-            <CTooltip title={'⌘ + J'} autoAdjustOverflow={true} placement="left" overlayStyle={{
-                width: '70px',
-                background: '#000000',
-                borderRadius: '8px',
-                boxShadow: '0 4px 12px 0px rgba(0,0,0,.2)'
-            }} overlayInnerStyle={{textAlign: 'center'}}>
-                <img className={'block w-[20px] h-[20px] mx-auto my-auto'} src={SmallAskAiIcon} alt=''/>
-            </CTooltip>
         </div>
 
         {showAskSearch && <div
