@@ -1,11 +1,10 @@
-import {createBrowserRouter, useLocation} from "react-router-dom";
+import {createBrowserRouter} from "react-router-dom";
 import Index from "~options/pages";
 import ShortcutMenu from "~options/pages/ShortcutMenu";
 import CustomProviderPage from "~options/pages/CustomProviderPage";
 import Layout from "~options/layout";
 import OptionsProvider from "~provider/Options";
-import {Fragment, useContext, useEffect} from "react";
-import {GoogleAnalyticsContext} from "~provider/GoogleAnalyticsProvider";
+import {Fragment} from "react";
 
 export const PATH_SETTING_SIDEBAR = "path_shortcut";
 export const PATH_SETTING_CONTACT_US = "path_contact_us";
@@ -13,13 +12,6 @@ export const PATH_SETTING_SHORTCUT = "";
 export const PATH_SETTING_CUSTOM_PROVIDER = "custom-provider";
 
 const Wrapper = ({children}) => {
-    const location = useLocation();
-    const {analytics} = useContext(GoogleAnalyticsContext);
-
-    useEffect(() => {
-        void analytics.current.firePageViewEvent("", location.pathname);
-    }, [location]);
-
     return <Fragment>
         {children}
     </Fragment>;

@@ -6,7 +6,6 @@ import {
     PORT_LISTEN_PANEL_CLOSED_KEY
 } from "~utils";
 import {Logger} from "~utils/logger";
-import Analytics from '~libs/ga';
 
 chrome.sidePanel
     .setPanelBehavior({
@@ -45,9 +44,8 @@ function changePanelShowStatus() {
 
 updateCurrentWindowId();
 
-addEventListener('unhandledrejection', async (event) => {
+addEventListener('unhandledrejection', (event) => {
     Logger.trace('unhandledrejection', event.reason);
-    void Analytics.fireErrorEvent(event.reason);
 });
 
 chrome.windows.onFocusChanged.addListener((windowId) => {
@@ -83,7 +81,6 @@ const injectContentScript = async function () {
 };
 
 chrome.runtime.onInstalled.addListener(async () => {
-    void Analytics.fireEvent('install');
     void injectContentScript();
 });
 
