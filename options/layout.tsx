@@ -1,14 +1,16 @@
 import {Outlet, useNavigate, useLocation} from "react-router-dom";
 import Icon from "data-base64:~assets/icon.png";
-import {useState} from "react";
+import {useContext, useState} from "react";
 import IconShortcut from "data-base64:~assets/icon_shortcut.svg";
 import IconShortcutSelected from "data-base64:~assets/icon_shortcut_selected.svg";
 import IconOpenAI from "data-base64:~assets/simple-icons_openai.svg";
 import {PATH_SETTING_SHORTCUT, PATH_SETTING_CUSTOM_PROVIDER} from "~options/router";
+import {LocaleContext} from "~libs/i18n";
 
 export default function Layout() {
     const n = useNavigate();
     const location = useLocation();
+    const {locale, setLocale, t} = useContext(LocaleContext);
     const [selected, setSelected] = useState(() => {
         const path = location.pathname.replace('/options.html/', '');
         return path === PATH_SETTING_CUSTOM_PROVIDER ? 'CustomProvider' : 'Shortcut';
@@ -35,12 +37,33 @@ export default function Layout() {
             <div className={'flex flex-col mt-[86px] ml-[24px]'}>
                 <ImageTextComponent onClick={() => handleClick({id: 'Shortcut', path: PATH_SETTING_SHORTCUT})}
                     imageSrc={IconShortcut} imageSrcSelected={IconShortcutSelected}
-                    text={'Shortcut Menu'} className={''}
+                    text={t('nav.shortcutMenu')} className={''}
                     isSelected={selected === 'Shortcut'}/>
                 <ImageTextComponent onClick={() => handleClick({id: 'CustomProvider', path: PATH_SETTING_CUSTOM_PROVIDER})}
                     imageSrc={IconOpenAI} imageSrcSelected={IconOpenAI}
-                    text={'Custom Providers'} className={'mt-[24px]'}
+                    text={t('nav.customProviders')} className={'mt-[24px]'}
                     isSelected={selected === 'CustomProvider'}/>
+            </div>
+
+            {/* Language Switcher */}
+            <div className={'mt-[60px] ml-[24px] border-t border-[#F3F4F9] pt-[24px]'}>
+                <div className={'text-[13px] text-[#5E5E5E] mb-[12px]'}>{t('common.save') === 'Save' ? 'Language' : '语言'}</div>
+                <div className={'flex gap-[8px]'}>
+                    <div
+                        onClick={() => setLocale('zh')}
+                        className={`px-[16px] py-[6px] rounded-[8px] text-[13px] cursor-pointer transition-colors ${
+                            locale === 'zh' ? 'bg-[#0A4DFE] text-white' : 'bg-[#F3F4F9] text-[#5E5E5E] hover:bg-[#E8ECFF]'
+                        }`}>
+                        中文
+                    </div>
+                    <div
+                        onClick={() => setLocale('en')}
+                        className={`px-[16px] py-[6px] rounded-[8px] text-[13px] cursor-pointer transition-colors ${
+                            locale === 'en' ? 'bg-[#0A4DFE] text-white' : 'bg-[#F3F4F9] text-[#5E5E5E] hover:bg-[#E8ECFF]'
+                        }`}>
+                        EN
+                    </div>
+                </div>
             </div>
         </div>
         <div className={"flex-1"}>

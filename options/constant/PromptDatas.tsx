@@ -6,46 +6,46 @@ export const PromptDatas = [
         id: 1012,
         itemType: PromptTypes.DEFAULT,
         imageKey: 'Translate',
-        title: 'Translate',
-        language: 'English',
+        title: '翻译',
+        language: '简体中文',
         isSelect: true,
-        text:`I would like you to translate the text delimited by triple quotes into ${PROMPT_PLACEHOLDER_LANG} language, ensuring that the translation is colloquial and authentic. Only give me the output and nothing else. Do not wrap responses in quotes. """ ${PROMPT_PLACEHOLDER_TEXT} """`,
+        text: `请将三个引号分隔的文本翻译成${PROMPT_PLACEHOLDER_LANG}，确保翻译地道自然。只输出翻译结果，不要添加其他内容。不要用引号包裹回复。""" ${PROMPT_PLACEHOLDER_TEXT} """`,
     },
     {
         id: 1013,
         itemType: PromptTypes.DEFAULT,
         imageKey: 'Summarize',
-        title: 'Summarize',
-        language: 'English',
+        title: '总结',
+        language: '简体中文',
         isSelect: true,
-        text: `Condense the following paragraph :${PROMPT_PLACEHOLDER_TEXT} .Please respond in ${PROMPT_PLACEHOLDER_LANG} .`,
+        text: `请总结以下段落的核心内容：${PROMPT_PLACEHOLDER_TEXT}。请用${PROMPT_PLACEHOLDER_LANG}回复。`,
     },
     {
         id: 1014,
         itemType: PromptTypes.DEFAULT,
         imageKey: 'Explain',
-        title: 'Explain',
-        language: 'English',
+        title: '解释',
+        language: '简体中文',
         isSelect: true,
-        text: `Clarify and explain the following paragraph :${PROMPT_PLACEHOLDER_TEXT} .Please respond in ${PROMPT_PLACEHOLDER_LANG} .`,
+        text: `请解释以下段落：${PROMPT_PLACEHOLDER_TEXT}。请用${PROMPT_PLACEHOLDER_LANG}回复。`,
     },
     {
         id: 1015,
         itemType: PromptTypes.DEFAULT,
         imageKey: 'Rephrase',
-        title: 'Rephrase',
-        language: 'English',
+        title: '改写',
+        language: '简体中文',
         isSelect: true,
-        text: `Rephrase the following paragraph :${PROMPT_PLACEHOLDER_TEXT} .Please respond in ${PROMPT_PLACEHOLDER_LANG} , focusing on the core topic. `,
+        text: `请改写以下段落，聚焦核心主题：${PROMPT_PLACEHOLDER_TEXT}。请用${PROMPT_PLACEHOLDER_LANG}回复。`,
     },
     {
         id: 1016,
         itemType: PromptTypes.DEFAULT,
         imageKey: 'Gammar_check',
-        title: 'Grammar check',
-        language: 'English',
+        title: '语法检查',
+        language: '简体中文',
         isSelect: true,
-        text: `Correct grammar mistakes, typos, and factual errors of the following paragraph :${PROMPT_PLACEHOLDER_TEXT} .Please respond in ${PROMPT_PLACEHOLDER_LANG} , focusing on the core topic. `,
+        text: `请纠正以下段落的语法错误、拼写错误和事实错误：${PROMPT_PLACEHOLDER_TEXT}。请用${PROMPT_PLACEHOLDER_LANG}回复，聚焦核心主题。`,
     },
 ];
 export const AskPromptId = 100001;
@@ -53,10 +53,10 @@ export const AskPromptData = {
     id: AskPromptId,
     itemType: PromptTypes.DEFAULT,
     imageKey: 'ask_ai',
-    title: 'AskAI',
-    language: 'English',
+    title: 'AI 提问',
+    language: '简体中文',
     isSelect: false,
-    text: 'AskAI',
+    text: 'AI 提问',
 };
 
 export const PdfPromptDatas = [
@@ -64,39 +64,39 @@ export const PdfPromptDatas = [
         id: 2021,
         itemType: PromptTypes.DEFAULT,
         imageKey: null,
-        title: 'Summarize',
-        language: 'English',
+        title: '总结',
+        language: '简体中文',
         isSelect: false,
-        text: 'Provide a 3-5 sentence summary that captures the key points and main takeaways from this file.',
+        text: '请用 3-5 句话总结此文件的关键要点和主要内容。',
     },
     {
         id: 2022,
         itemType: PromptTypes.DEFAULT,
         imageKey: null,
-        title: 'Key Points',
-        language: 'English',
+        title: '关键要点',
+        language: '简体中文',
         isSelect: false,
-        text: 'Summarize 5 key points in this file by identifying 5 important points or takeaways. Ensure that the key points accurately capture the main ideas, concepts, and insights from the text in a succinct way. Avoid redundancy and focus on highlighting the most crucial and relevant information. Please use the following format:\n' +
-            'Key Point 1:\n' +
-            'Key Point 2:\n' +
-            'Key Point 3:\n' +
-            'Key Point 4:\n' +
-            'Key Point 5:',
+        text: '请从文件中提取 5 个关键要点。确保关键要点准确捕捉文本中的主要思想、概念和见解，简洁明了，避免冗余。请使用以下格式：\n' +
+            '要点 1:\n' +
+            '要点 2:\n' +
+            '要点 3:\n' +
+            '要点 4:\n' +
+            '要点 5:',
     },
     {
         id: 2023,
         itemType: PromptTypes.DEFAULT,
         imageKey: null,
-        title: 'Quiz',
-        language: 'English',
+        title: '小测验',
+        language: '简体中文',
         isSelect: false,
-        text: 'Based on this file, please generate 5 sets of quiz questions and answers. The questions should cover the key information and important concepts in the text. Ensure that the questions and answers are concise and easy to understand. Each question should have one correct answer.\n' +
-            'Please provide the quiz content in the following format:\n' +
-            'Quiz 1: Question: Answer;\n' +
-            'Quiz 2: Question: Answer;\n' +
-            'Quiz 3: Question: Answer;\n' +
-            'Quiz 4: Question: Answer;\n' +
-            'Quiz 5: Question: Answer;',
+        text: '基于此文件，请生成 5 组测验题目和答案。题目应覆盖文本中的关键信息和重要概念。确保题目和答案简洁易懂。每个题目应有一个正确答案。\n' +
+            '请按以下格式提供测验内容：\n' +
+            '题目 1: 问题: 答案;\n' +
+            '题目 2: 问题: 答案;\n' +
+            '题目 3: 问题: 答案;\n' +
+            '题目 4: 问题: 答案;\n' +
+            '题目 5: 问题: 答案;',
     },
 ];
 
@@ -105,27 +105,27 @@ export const ImagePromptDatas = [
         id: 3031,
         itemType: PromptTypes.DEFAULT,
         imageKey: null,
-        title: 'Describe',
-        language: 'English',
+        title: '描述',
+        language: '简体中文',
         isSelect: false,
-        text: 'Describe this Image',
+        text: '描述这张图片',
     },
     {
         id: 3032,
         itemType: PromptTypes.DEFAULT,
         imageKey: null,
-        title: 'Grab Text',
-        language: 'English',
+        title: '提取文字',
+        language: '简体中文',
         isSelect: false,
-        text: 'Extract text from this image',
+        text: '从这张图片中提取文字',
     },
     {
         id: 3033,
         itemType: PromptTypes.DEFAULT,
         imageKey: null,
-        title: 'Extract & Translate',
-        language: 'English',
+        title: '提取并翻译',
+        language: '简体中文',
         isSelect: false,
-        text: 'Extract text from this image and then translate into English',
+        text: '从这张图片中提取文字，然后翻译成简体中文',
     },
 ];

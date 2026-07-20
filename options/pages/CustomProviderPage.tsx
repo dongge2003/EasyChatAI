@@ -18,12 +18,14 @@ import {
 import IconOpenAI from "data-base64:~assets/simple-icons_openai.svg";
 import {clearCachedClassesForProvider} from "~libs/chatbot/custom-openai/registry";
 import {OptionsContext} from "~provider/Options";
+import {LocaleContext} from "~libs/i18n";
 
 export default function CustomProviderPage() {
     const [providers, setProviders] = useStorage<CustomProviderConfig[]>(CUSTOM_PROVIDERS_STORAGE_KEY, []);
     const [modalOpen, setModalOpen] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
     const {messageApi} = useContext(OptionsContext);
+    const {t} = useContext(LocaleContext);
 
     // Form state
     const [formName, setFormName] = useState('');
@@ -68,11 +70,11 @@ export default function CustomProviderPage() {
         const key = formApiKey.trim();
 
         if (!url) {
-            messageApi.warning('Please enter the API URL first.');
+            messageApi.warning(t('validation.enterApiUrl'));
             return;
         }
         if (!key) {
-            messageApi.warning('Please enter the API Key first.');
+            messageApi.warning(t('validation.enterApiKey'));
             return;
         }
 
@@ -84,9 +86,9 @@ export default function CustomProviderPage() {
             if (selectedModels.length > 0) {
                 setSelectedModels(selectedModels.filter(m => models.includes(m)));
             }
-            messageApi.success(`Found ${models.length} models`);
+            messageApi.success(t('validation.foundModels', {count: models.length}));
         } catch (err: any) {
-            messageApi.error(`Failed to fetch models: ${err.message}`);
+            messageApi.error(t('validation.fetchFailed', {message: err.message}));
         } finally {
             setFetching(false);
         }
@@ -94,19 +96,19 @@ export default function CustomProviderPage() {
 
     const handleSave = async () => {
         if (!formName.trim()) {
-            messageApi.warning('Please enter a provider name.');
+            messageApi.warning(t('validation.enterProviderName'));
             return;
         }
         if (!formApiUrl.trim()) {
-            messageApi.warning('Please enter the API URL.');
+            messageApi.warning(t('validation.enterApiUrlFull'));
             return;
         }
         if (!formApiKey.trim()) {
-            messageApi.warning('Please enter the API Key.');
+            messageApi.warning(t('validation.enterApiKeyFull'));
             return;
         }
         if (selectedModels.length === 0) {
-            messageApi.warning('Please select at least one model.');
+            messageApi.warning(t('validation.selectAtLeastOneModel'));
             return;
         }
 
@@ -127,15 +129,15 @@ export default function CustomProviderPage() {
                 clearCachedClassesForProvider(editingId);
                 const updated = providers.map(p => p.id === editingId ? config : p);
                 await setProviders(updated);
-                messageApi.success('Provider updated');
+                messageApi.success(t('validation.providerUpdated'));
             } else {
                 await setProviders([...providers, config]);
-                messageApi.success('Provider added');
+                messageApi.success(t('validation.providerAdded'));
             }
 
             closeModal();
         } catch (err: any) {
-            messageApi.error(`Save failed: ${err.message}`);
+            messageApi.error(t('validation.saveFailed', {message: err.message}));
         } finally {
             setSaving(false);
         }
@@ -143,24 +145,24 @@ export default function CustomProviderPage() {
 
     const handleDelete = (provider: CustomProviderConfig) => {
         Modal.confirm({
-            title: 'Delete Provider',
+            title: t('customProvider.deleteTitle'),
             icon: <DeleteOutlined style={{color: '#FF2D10'}}/>,
-            content: `Are you sure you want to delete "${provider.name}"? This will remove all its models from the selection list.`,
-            okText: 'Delete',
+            content: t('customProvider.deleteConfirm', {name: provider.name}),
+            okText: t('common.delete'),
             okButtonProps: {danger: true},
-            cancelText: 'Cancel',
+            cancelText: t('common.cancel'),
             onOk: async () => {
                 clearCachedClassesForProvider(provider.id);
                 const filtered = providers.filter(p => p.id !== provider.id);
                 await setProviders(filtered);
-                messageApi.success('Provider deleted');
+                messageApi.success(t('validation.providerDeleted'));
             },
         });
     };
 
     const columns = [
         {
-            title: 'Provider',
+            title: t('customProvider.providerCol'),
             dataIndex: 'name',
             key: 'name',
             render: (name: string) => (
@@ -171,7 +173,7 @@ export default function CustomProviderPage() {
             ),
         },
         {
-            title: 'API URL',
+            title: t('customProvider.apiUrlCol'),
             dataIndex: 'apiUrl',
             key: 'apiUrl',
             render: (url: string) => (
@@ -181,7 +183,7 @@ export default function CustomProviderPage() {
             ),
         },
         {
-            title: 'Models',
+            title: t('customProvider.modelsCol'),
             dataIndex: 'enabledModels',
             key: 'enabledModels',
             render: (models: string[]) => (
@@ -194,15 +196,15 @@ export default function CustomProviderPage() {
             ),
         },
         {
-            title: 'Actions',
+            title: t('customProvider.actionsCol'),
             key: 'actions',
             width: 120,
             render: (_: any, record: CustomProviderConfig) => (
                 <Space>
-                    <Tooltip title="Edit">
+                    <Tooltip title={t('common.edit')}>
                         <Button type="text" icon={<EditOutlined/>} onClick={() => openEditModal(record)}/>
                     </Tooltip>
-                    <Tooltip title="Delete">
+                    <Tooltip title={t('common.delete')}>
                         <Button type="text" danger icon={<DeleteOutlined/>} onClick={() => handleDelete(record)}/>
                     </Tooltip>
                 </Space>
@@ -215,18 +217,17 @@ export default function CustomProviderPage() {
             <div
                 className="bg-white shadow-[0_4px_12px_0px_rgba(0,0,0,.2)] overflow-hidden rounded-tl-[24px] rounded-tr-[24px] px-[56px] py-[32px] mt-[32px] flex flex-col">
                 <div className="text-[#333333] font-[700] text-[20px] justify-start">
-                    Custom Providers
+                    {t('customProvider.title')}
                 </div>
                 <div className="text-[#5E5E5E] font-[400] text-[12px] justify-start mt-[8px] mb-[24px]">
-                    Add your own OpenAI-compatible API providers. Configure API URL, API Key, and select the models you
-                    want to use in the sidebar.
+                    {t('customProvider.description')}
                 </div>
 
                 {providers.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-[60px] text-[#C2C2C2]">
                         <ApiOutlined style={{fontSize: 48, color: '#D9D9D9'}}/>
-                        <div className="mt-[16px] text-[16px]">No custom providers configured yet.</div>
-                        <div className="mt-[8px] text-[12px]">Click the button below to add your first provider.</div>
+                        <div className="mt-[16px] text-[16px]">{t('customProvider.empty')}</div>
+                        <div className="mt-[8px] text-[12px]">{t('customProvider.emptyHint')}</div>
                     </div>
                 ) : (
                     <Table
@@ -244,13 +245,13 @@ export default function CustomProviderPage() {
                     onClick={openCreateModal}
                     className="mt-[24px] self-start bg-[#0A4DFE] h-[40px]"
                 >
-                    Add Provider
+                    {t('customProvider.add')}
                 </Button>
             </div>
 
             {/* Add/Edit Modal */}
             <Modal
-                title={editingId ? 'Edit Provider' : 'Add Provider'}
+                title={editingId ? t('customProvider.editTitle') : t('customProvider.addTitle')}
                 open={modalOpen}
                 onCancel={closeModal}
                 footer={null}
@@ -260,10 +261,10 @@ export default function CustomProviderPage() {
                 <div className="flex flex-col gap-[16px] mt-[16px]">
                     {/* Name */}
                     <div>
-                        <div className="text-[14px] font-medium text-[#333333] mb-[8px]">Provider Name</div>
+                        <div className="text-[14px] font-medium text-[#333333] mb-[8px]">{t('customProvider.name')}</div>
                         <Input
                             prefix={<ApiOutlined className="text-[#C2C2C2]"/>}
-                            placeholder="e.g. My OpenAI Proxy"
+                            placeholder={t('customProvider.namePlaceholder')}
                             value={formName}
                             onChange={e => setFormName(e.target.value)}
                             size="large"
@@ -272,25 +273,25 @@ export default function CustomProviderPage() {
 
                     {/* API URL */}
                     <div>
-                        <div className="text-[14px] font-medium text-[#333333] mb-[8px]">API URL</div>
+                        <div className="text-[14px] font-medium text-[#333333] mb-[8px]">{t('customProvider.apiUrl')}</div>
                         <Input
                             prefix={<LinkOutlined className="text-[#C2C2C2]"/>}
-                            placeholder="e.g. https://api.openai.com/v1"
+                            placeholder={t('customProvider.apiUrlPlaceholder')}
                             value={formApiUrl}
                             onChange={e => setFormApiUrl(e.target.value)}
                             size="large"
                         />
                         <div className="text-[12px] text-[#C2C2C2] mt-[4px]">
-                            The base URL of the OpenAI-compatible API (must support /v1/chat/completions and /v1/models)
+                            {t('customProvider.apiUrlHint')}
                         </div>
                     </div>
 
                     {/* API Key */}
                     <div>
-                        <div className="text-[14px] font-medium text-[#333333] mb-[8px]">API Key</div>
+                        <div className="text-[14px] font-medium text-[#333333] mb-[8px]">{t('customProvider.apiKey')}</div>
                         <Input.Password
                             prefix={<KeyOutlined className="text-[#C2C2C2]"/>}
-                            placeholder="sk-..."
+                            placeholder={t('customProvider.apiKeyPlaceholder')}
                             value={formApiKey}
                             onChange={e => setFormApiKey(e.target.value)}
                             size="large"
@@ -300,21 +301,21 @@ export default function CustomProviderPage() {
                     {/* Fetch Models */}
                     <div className="border-t border-[#F3F4F9] pt-[16px]">
                         <div className="flex items-center justify-between mb-[12px]">
-                            <span className="text-[14px] font-medium text-[#333333]">Available Models</span>
+                            <span className="text-[14px] font-medium text-[#333333]">{t('customProvider.availableModels')}</span>
                             <Button
                                 icon={<ReloadOutlined/>}
                                 onClick={handleFetchModels}
                                 loading={fetching}
                                 disabled={!formApiUrl.trim() || !formApiKey.trim()}
                             >
-                                {fetching ? 'Fetching...' : 'Fetch Models'}
+                                {fetching ? t('customProvider.fetching') : t('customProvider.fetchModels')}
                             </Button>
                         </div>
 
                         {fetchedModels.length > 0 ? (
                             <div className="border border-[#F3F4F9] rounded-[8px] p-[12px] max-h-[300px] overflow-y-auto">
                                 <div className="text-[12px] text-[#C2C2C2] mb-[8px]">
-                                    Select the models you want to use in the sidebar:
+                                    {t('customProvider.selectModelsHint')}
                                 </div>
                                 <Checkbox.Group
                                     value={selectedModels}
@@ -330,14 +331,14 @@ export default function CustomProviderPage() {
                             </div>
                         ) : (
                             <div className="text-[12px] text-[#C2C2C2] py-[24px] text-center">
-                                Click "Fetch Models" to discover available models from your API endpoint.
+                                {t('customProvider.fetchHint')}
                             </div>
                         )}
                     </div>
 
                     {/* Actions */}
                     <div className="flex justify-end gap-[12px] mt-[8px]">
-                        <Button onClick={closeModal} size="large">Cancel</Button>
+                        <Button onClick={closeModal} size="large">{t('common.cancel')}</Button>
                         <Button
                             type="primary"
                             onClick={handleSave}
@@ -345,7 +346,7 @@ export default function CustomProviderPage() {
                             size="large"
                             className="bg-[#0A4DFE]"
                         >
-                            {editingId ? 'Update' : 'Add Provider'}
+                            {editingId ? t('common.update') : t('customProvider.add')}
                         </Button>
                     </div>
                 </div>

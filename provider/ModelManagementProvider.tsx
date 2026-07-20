@@ -47,7 +47,7 @@ async function buildModelLists(): Promise<{ allModels: Ms; categoryModels: CMs }
     }
 
     const categoryModels: CMs = customModels.length > 0
-        ? [{label: "Custom", models: customModels}]
+        ? [{label: "Custom Provider", models: customModels}]
         : [];
 
     return {allModels: customModels, categoryModels};

@@ -13,6 +13,7 @@ import {DownOutlined} from '@ant-design/icons';
 import {useStorage} from "@plasmohq/storage/dist/hook";
 import {PromptTypes} from "~options/constant/PromptTypes";
 import {OptionsContext} from "~provider/Options";
+import {LocaleContext} from "~libs/i18n";
 import IconDeleteRed from "data-base64:~assets/icon_delete_red.svg";
 import {items} from "~options/constant/PromptLanguage";
 import * as Icons from '@ant-design/icons';
@@ -34,6 +35,7 @@ export default function AiEnginePage() {
     const [language, setLanguage] = useState('English');
     const [, drop] = useDrop(() => ({accept: ItemTypes.CARD}));
     const {messageApi} = useContext(OptionsContext);
+    const {t} = useContext(LocaleContext);
     const showType = useRef(0);
     const editId = useRef('');
     const [defaultImage, setDefaultImage] = useState(EditPlusIcon);
@@ -41,22 +43,19 @@ export default function AiEnginePage() {
     const [visible, setVisible] = useState<boolean>();
     const setSelectedIcon = (key?: string) => _setSelectedIcon(getIconSrc(key));
 
-    const promptTips = 'Quick Action allows users to personalize prompts for selected text. The supported variables include:\n' +
-        `- ${PROMPT_PLACEHOLDER_TEXT}\n` +
-        `- ${PROMPT_PLACEHOLDER_LANG}\n` +
-        '\n' +
-        `Typically, you can manage the output language using ${PROMPT_PLACEHOLDER_LANG} and convey your selected keywords to the prompt using ${PROMPT_PLACEHOLDER_TEXT}. For instance,` +
-        `Translate ${PROMPT_PLACEHOLDER_TEXT} to ${PROMPT_PLACEHOLDER_LANG}`;
+    const promptTips = t('shortcutMenu.promptPlaceholder', {
+        text: PROMPT_PLACEHOLDER_TEXT,
+        lang: PROMPT_PLACEHOLDER_LANG
+    });
 
     const promptTipsBr = (
         <div>
-            Quick Action allows users to personalize prompts for selected text. The supported variables include:<br/>
-            - {PROMPT_PLACEHOLDER_TEXT}<br/>
-            - {PROMPT_PLACEHOLDER_LANG}<br/>
-            <br/>
-            Typically, you can manage the output language using {PROMPT_PLACEHOLDER_LANG} and convey your selected keywords to the prompt
-            using {PROMPT_PLACEHOLDER_TEXT}. For instance,<br/>
-            Translate {PROMPT_PLACEHOLDER_TEXT} to {PROMPT_PLACEHOLDER_LANG}.
+            {t('shortcutMenu.promptPlaceholder', {
+                text: PROMPT_PLACEHOLDER_TEXT,
+                lang: PROMPT_PLACEHOLDER_LANG
+            }).split('\n').map((line, i) => (
+                <span key={i}>{line}<br/></span>
+            ))}
         </div>
     );
     const [deletePrompt, contextHolder] = Modal.useModal();
@@ -76,15 +75,15 @@ export default function AiEnginePage() {
         const {card, index} = findCard(id);
         if (card.itemType === PromptTypes.CUSTOM) {
             deletePrompt.confirm({
-                title: 'Delete',
+                title: t('common.delete'),
                 icon: <img src={IconDeleteRed} className={'h-[24px] w-[24px] me-[4px]'} alt=''/>,
-                content: 'Are you sure you want to delete the prompt?',
-                okText: 'Delete',
+                content: t('shortcutMenu.deleteConfirm'),
+                okText: t('common.delete'),
                 okButtonProps: {
                     style: {backgroundColor: '#FF2D10', borderColor: '#FF2D10'},
                     className: 'hover:hover:bg-red-700 hover:hover:bg-red-700'
                 },
-                cancelText: 'Cancel',
+                cancelText: t('common.cancel'),
                 onOk() {
                     void setCards(
                         update(cards, {
@@ -93,11 +92,11 @@ export default function AiEnginePage() {
                             ],
                         }),
                     );
-                    void messageApi.success('Prompt deleted successfully');
+                    void messageApi.success(t('shortcutMenu.deleteSuccess'));
                 }
             });
         } else {
-            void messageApi.warning('Default Prompt does not support deletion');
+            void messageApi.warning(t('shortcutMenu.cannotDeleteDefault'));
         }
     };
     const findCard = useCallback(
@@ -149,7 +148,7 @@ export default function AiEnginePage() {
         Logger.log(`SelectedIcon=======${SelectedIcon} ======${SelectedIcon?SelectedIcon.name:''}`);
         if (showType.current === 0) {
             if((SelectedIcon.name === defaultIcon)){
-                void messageApi.warning('Please select an icon.');
+                void messageApi.warning(t('shortcutMenu.selectIconWarn'));
                 return;
             }
             if (inputTitleValue.trim() && inputValue.trim()) {
@@ -164,7 +163,7 @@ export default function AiEnginePage() {
                 }]);
                 closeAddPrompt();
             }else {
-                void messageApi.warning('Please complete filling in the relevant information.');
+                void messageApi.warning(t('shortcutMenu.completeInfoWarn'));
             }
         } else if (showType.current === 1) {
             Logger.log(`createCard1=======${cards.length}`);
@@ -267,16 +266,14 @@ export default function AiEnginePage() {
         </div>
     );
 
-    const iconPopTitle = <span className={'text-[20px] font-[600] justify-start mt-[35px] ps-[30px] text-[#333333]'}>Select Icon</span>;
+    const iconPopTitle = <span className={'text-[20px] font-[600] justify-start mt-[35px] ps-[30px] text-[#333333]'}>{t('shortcutMenu.selectIcon')}</span>;
 
     return (
         <div>
             <div
                 className={'bg-white shadow-[0_4px_12px_0px_rgba(0,0,0,.2)] overflow-hidden rounded-tl-[24px] rounded-tr-[24px] px-[56px] py-[32px] mt-[32px] flex flex-col'}>
-                <div className={'text-[#333333] font-[700] text-[20px] justify-start'}>Shortcut Menu</div>
-                <div className={'text-[#5E5E5E] font-[400] text-[12px] justify-start mt-[8px]'}>Customize your menu of
-                    actions by editing, rearranging through dragging, and including custom actions below.
-                </div>
+                <div className={'text-[#333333] font-[700] text-[20px] justify-start'}>{t('shortcutMenu.title')}</div>
+                <div className={'text-[#5E5E5E] font-[400] text-[12px] justify-start mt-[8px]'}>{t('shortcutMenu.description')}</div>
                 <div ref={drop}>
                     {cards.map((card) => (
                         <Card
@@ -297,7 +294,7 @@ export default function AiEnginePage() {
                     onClick={() => creatShowModal(true)}
                     className={'h-[40px] w-fit bg-[#0A4DFE] rounded-[8px] bg-opacity-10 inline-flex flex-row justify-start items-center mt-[32px] px-[16px] cursor-pointer'}>
                     <img src={IconPlus} className={'h-[15px] w-[15px]'} alt=''/>
-                    <div className={'text-[#0A4DFE] font-[400] text-[15px] ml-[8px]'}>Create new shortcut</div>
+                    <div className={'text-[#0A4DFE] font-[400] text-[15px] ml-[8px]'}>{t('shortcutMenu.createNew')}</div>
                 </div>
                 <div className={'h-[100px] w-full'}/>
             </div>
@@ -306,7 +303,7 @@ export default function AiEnginePage() {
                 <div className={'flex flex-col items-start pl-[20px] w-full'}>
                     <div className={'flex flex-row justify-start items-center mt-[20px] h-[40px]'}>
                         <div
-                            className={'font-[700] text-[20px] text-[#333333] w-[100px] flex justify-start items-center'}>icon
+                            className={'font-[700] text-[20px] text-[#333333] w-[100px] flex justify-start items-center'}>{t('shortcutMenu.icon')}
                         </div>
                         <Popover placement='rightTop' title={iconPopTitle} content={content} open={visible} >
                             {SelectedIcon ? <SelectedIcon style={{cursor: 'pointer', fontSize: '30px', color: '#555555'}}/> :
@@ -315,7 +312,7 @@ export default function AiEnginePage() {
                     </div>
                     <div className={'flex flex-row justify-start items-center mt-[24px] h-[40px]'}>
                         <div
-                            className={'font-[700] text-[20px] text-[#333333] w-[100px] flex justify-start items-center'}>Name
+                            className={'font-[700] text-[20px] text-[#333333] w-[100px] flex justify-start items-center'}>{t('shortcutMenu.name')}
                         </div>
                         <input
                             ref={inputTitleRef}
@@ -323,13 +320,13 @@ export default function AiEnginePage() {
                             readOnly={isReadOnly}
                             onChange={(e) => setInputTitleValue(e.target.value)}
                             className={'h-[40px] rounded-[8px] border-[1px] border-[#D9D9D9] px-[16px] w-[520px]'}
-                            placeholder={'Prompt manager'}
+                            placeholder={t('shortcutMenu.namePlaceholder')}
                             autoFocus/>
                     </div>
                     <div className={'flex flex-row justify-start items-start mt-[24px] h-[199px]'}>
                         <div className={'flex flex-row w-[100px] h-[40px] justify-start items-center'}>
                             <div
-                                className={'font-[700] text-[20px] text-[#333333] flex justify-start items-start'}>Prompt
+                                className={'font-[700] text-[20px] text-[#333333] flex justify-start items-start'}>{t('shortcutMenu.prompt')}
                             </div>
                             <CTooltip title={promptTipsBr} autoAdjustOverflow={true} placement="rightTop"
                                 overlayStyle={{
@@ -352,10 +349,8 @@ export default function AiEnginePage() {
                     <div className={'h-[1px] w-[620px] bg-[#DADCE0] justify-start mt-[24px]'}/>
                     <div className={'h-[80px] w-[620px] flex flex-row'}>
                         <div className={'flex flex-col justify-center h-full flex-grow'}>
-                            <div className={'text-[#333333] font-[700] text-[20px] justify-start'}>Variables</div>
-                            <div className={'text-[#5E5E5E] font-[400] text-[13px] justify-start'}>default value of
-                                $[lang]
-                            </div>
+                            <div className={'text-[#333333] font-[700] text-[20px] justify-start'}>{t('shortcutMenu.variables')}</div>
+                            <div className={'text-[#5E5E5E] font-[400] text-[13px] justify-start'}>{t('shortcutMenu.defaultLang')}</div>
                         </div>
                         <div className={'flex justify-end items-center'}>
                             <Dropdown overlayStyle={{maxHeight: '400px', overflow: 'auto'}} menu={menuProps}
@@ -372,7 +367,7 @@ export default function AiEnginePage() {
                     <div className={'h-[1px] w-[620px] bg-[#DADCE0] justify-start'}/>
                     <div className={'w-[620px] justify-end flex flex-row mt-[40px]'}>
                         <Button onClick={() => createCard()} type="primary"
-                            className={'bg-[#0A4DFE] h-[40px] w-[161px]'}>Submit</Button>
+                            className={'bg-[#0A4DFE] h-[40px] w-[161px]'}>{t('common.submit')}</Button>
                     </div>
                 </div>
             </Modal>

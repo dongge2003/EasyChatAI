@@ -11,6 +11,7 @@ import NewChatIcon from "data-base64:~assets/new_chat.svg";
 import MenuArrowIcon from "data-base64:~assets/menu_arrow.svg";
 import eventBus from "~libs/EventBus";
 import {SidePanelContext} from "~provider/sidepanel/SidePanelProvider";
+import {LocaleContext} from "~libs/i18n";
 
 export interface IDrawerNaviItem {
     path: PanelRouterPath
@@ -20,7 +21,7 @@ export interface IDrawerNaviItem {
 }
 
 const DrawerNaviItems: IDrawerNaviItem[] = [
-    {path: PanelRouterPath.CONVERSATION, name: "Chat", icon:  IconChat, activeIcon: IconChatActive},
+    {path: PanelRouterPath.CONVERSATION, name: "header.chat", icon:  IconChat, activeIcon: IconChatActive},
 ];
 
 export default function () {
@@ -28,6 +29,7 @@ export default function () {
     const [placement] = useState<DrawerProps['placement']>('right');
     const navigate = useNavigate();
     const {expandMenu, setExpandMenu} = useContext(SidePanelContext);
+    const {t} = useContext(LocaleContext);
 
     useEffect(() => {
         setOpen(expandMenu);
@@ -88,17 +90,17 @@ export default function () {
                 {
                     DrawerNaviItems.map((item, index) => {
                         return <div key={item.name} onClick={() => goTo(item.path)} className={'mb-[24px]'}>
-                            <DrawerNaviItem key={index} naviItem={item}/>
+                            <DrawerNaviItem key={index} naviItem={{...item, name: t(item.name)}}/>
                         </div>;
                     })
                 }
             </div>
         </Drawer>
         <div className={'flex items-center font-[#333333] text-[20px] font-[600]'}>
-            AI Chat
+            {t('header.title')}
         </div>
         <div className='flex justify-end items-center'>
-            <Tooltip title='New Chat'>
+            <Tooltip title={t('header.newChat')}>
                 <img  className='w-[22px] mr-4 cursor-pointer' src={NewChatIcon} onClick={newChatClick} alt=""/>
             </Tooltip>
             {

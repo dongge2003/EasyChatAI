@@ -8,6 +8,7 @@ import * as style from "~style/panel-main.module.scss";
 import '~base.scss';
 import CommonShortcutProvider from "~provider/CommonShortcutProvider";
 import GoogleAnalyticsProvider from "~provider/GoogleAnalyticsProvider";
+import { LocaleProvider } from "~libs/i18n";
 
 export const getStyle: PlasmoGetStyle = () => {
     const style = document.createElement("style");
@@ -75,9 +76,11 @@ export default function Main() {
     return <GoogleAnalyticsProvider>
         <CommonShortcutProvider>
             <SidePanelProvider>
-                <TopWrapper>
-                    <RouterProvider router={router}/>
-                </TopWrapper>
+                <LocaleProvider>
+                    <TopWrapper>
+                        <RouterProvider router={router}/>
+                    </TopWrapper>
+                </LocaleProvider>
             </SidePanelProvider>
         </CommonShortcutProvider>
     </GoogleAnalyticsProvider>;

@@ -64,6 +64,7 @@ import {UploadUtils} from "~utils/UploadUtils";
 import QuoteCardIcon from "data-base64:~assets/icon_quote_card.svg";
 import DownloadCardIcon from "data-base64:~assets/icon_download_card.svg";
 import FileBgIcon from "data-base64:~assets/icon_file_bg.svg";
+import {LocaleContext} from "~libs/i18n";
 let abortController:AbortController;
 
 let popIsShow = false;
@@ -193,6 +194,7 @@ const AIError = memo(function ({model, error, start, setCurrentBotResponseMessag
                                            activePage: number
                                        }) {
     const {conversationId} = useContext(ConversationContext);
+    const {t} = useContext(LocaleContext);
 
     useEffect(() => {
         Logger.log('000000-----',error?.code, model.botName, model.requireLogin);
@@ -248,81 +250,78 @@ const AIError = memo(function ({model, error, start, setCurrentBotResponseMessag
             errMessage =
                     <div className='w-fit'>
                         <CatAnimation/>
-                        <div className='mt-4 text-[12px] leading-loose'>If there is no response for a long time, please try to refresh manually.
-                            <u className='cursor-pointer text-[#0A4DFE]' onClick={clickRefresh}> Click to Refresh</u>
+                        <div className='mt-4 text-[12px] leading-loose'>{t('error.timeout')}
+                            <u className='cursor-pointer text-[#0A4DFE]' onClick={clickRefresh}> {t('error.timeoutRefresh')}</u>
                         </div>
                     </div>;
             break;
         case ErrorCode.UNAUTHORIZED:
             errMessage =
                     <div className='w-fit'>
-                        <div className='text-base font-bold mb-2'>Login Required</div>
-                        <div>Please log in to your <u className={"text-[#0A4DFE]"} onClick={openLogin}>{name}</u> account to continue.</div>
-                        <BlueBtn text='Log in' handleClick={openLogin} />
+                        <div className='text-base font-bold mb-2'>{t('conversation.loginRequired')}</div>
+                        <div>{t('error.loginRequired', {model: name})}</div>
+                        <BlueBtn text={t('conversation.logIn')} handleClick={openLogin} />
                     </div>;
             break;
         case ErrorCode.CAPTCHA:
             errMessage =
                     <div className='w-fit'>
-                        <div className='text-base font-bold mb-2'>Verification Required</div>
-                        <div>You need to complete the {name} Captcha Challenge to continue using it. Please proceed to the challenge.</div>
-                        <BlueBtn text='Go verify' handleClick={openCaptcha} />
+                        <div className='text-base font-bold mb-2'>{t('conversation.verificationRequired')}</div>
+                        <div>{t('error.captchaRequired', {model: name})}</div>
+                        <BlueBtn text={t('conversation.goVerify')} handleClick={openCaptcha} />
                     </div>;
             break;
         case ErrorCode.CONVERSATION_LIMIT:
             errMessage =
                 <div className='w-fit'>
-                    <div className='text-base font-bold mb-2'>Oops! 3rd-Party Error</div>
+                    <div className='text-base font-bold mb-2'>{t('error.thirdPartyError')}</div>
                     {error?.message ? <div className='mb-3'>{error?.message}</div> :
-                        <div className='mb-3'>Conversation limit reached. Please try it later. Or you can check your
-                            <u className={"text-[#0A4DFE] cursor-pointer"} onClick={openCaptcha}> {name} </u> account for
-                            more.</div>}
-                    <u className={"text-[14px] text-[#0A4DFE] cursor-pointer"} onClick={clickRefresh}>Click to
-                        Refresh</u>
+                        <div className='mb-3'>{t('error.conversationLimit', {model: name})}</div>}
+                    <u className={"text-[14px] text-[#0A4DFE] cursor-pointer"} onClick={clickRefresh}>{t('error.timeoutRefresh')}</u>
                 </div>;
             break;
         case ErrorCode.MODEL_INTERNAL_ERROR:
             errMessage =
                     <div className='w-fit'>
-                        <div className='text-base font-bold mb-2'>Oops! 3rd-Party Error</div>
-                        <div className='mb-3'>{error?.message ?? `This model's current conversation is no longer available. Please try to reload the ${name} service manually.`}</div>
-                        <u className={"text-[14px] text-[#0A4DFE] cursor-pointer"} onClick={clickRefresh}>Click to Refresh</u>
+                        <div className='text-base font-bold mb-2'>{t('error.thirdPartyError')}</div>
+                        <div className='mb-3'>{error?.message ?? t('error.modelInternalError', {model: name})}</div>
+                        <u className={"text-[14px] text-[#0A4DFE] cursor-pointer"} onClick={clickRefresh}>{t('error.timeoutRefresh')}</u>
                     </div>;
             break;
         case ErrorCode.UPLOAD_FILE_NOT_SUPPORTED:
             errMessage =
                     <div className='w-fit'>
-                        <div className='text-base font-bold mb-2'>Oops! 3rd-Party Error</div>
-                        <div className='mb-3'>This model cannot support PDF/Image analysis functions. You can switch models to access this function.</div>
-                        <u className={"text-[14px] text-[#0A4DFE] cursor-pointer"} onClick={switchModel}>Click to Switch</u>
+                        <div className='text-base font-bold mb-2'>{t('error.thirdPartyError')}</div>
+                        <div className='mb-3'>{t('error.uploadNotSupported')}</div>
+                        <u className={"text-[14px] text-[#0A4DFE] cursor-pointer"} onClick={switchModel}>{t('error.switchModel')}</u>
                     </div>;
             break;
         case ErrorCode.MODEL_NO_PERMISSION:
             errMessage =  <div className='w-fit'>
-                <div className='text-base font-bold mb-2'>Oops! Access Denied! </div>
-                <div className='mb-3'>{`Sorry, you currently don't have access to this model. Please visit the 3rd-party website to activate or check your ${name} permissions.`}</div>
-                <u className={"text-[14px] text-[#0A4DFE] cursor-pointer"}>Click to Switch</u>
+                <div className='text-base font-bold mb-2'>{t('error.accessDenied')}</div>
+                <div className='mb-3'>{t('error.noPermission', {model: name})}</div>
+                <u className={"text-[14px] text-[#0A4DFE] cursor-pointer"}>{t('error.switchModel')}</u>
             </div>;
             break;
         case ErrorCode.FILE_OTHER:
             errMessage =
                     <div className='w-fit'>
-                        <div className='text-base font-bold mb-2'>Oops! 3rd-Party Error</div>
-                        <div className='mb-3'>The current model encountered an error while analyzing the image/PDF file. You can switch models to proceed with your request.</div>
-                        <u className={"text-[14px] text-[#0A4DFE] cursor-pointer"} onClick={switchModel}>Click to Switch</u>
+                        <div className='text-base font-bold mb-2'>{t('error.thirdPartyError')}</div>
+                        <div className='mb-3'>{t('error.fileAnalysisError')}</div>
+                        <u className={"text-[14px] text-[#0A4DFE] cursor-pointer"} onClick={switchModel}>{t('error.switchModel')}</u>
                     </div>;
             break;
         case ErrorCode.NETWORK_ERROR:
         default:
             errMessage =
                     <div className='w-fit'>
-                        <div className='text-base font-bold mb-2'>Oops! The Message Went Missing</div>
-                        <div className='leading-loose'>Please refresh after check:</div>
+                        <div className='text-base font-bold mb-2'>{t('error.networkTitle')}</div>
+                        <div className='leading-loose'>{t('error.networkCheck')}</div>
                         <ul className='list-disc leading-loose pl-4'>
-                            <li>Ensure the internet connection is stable or try to switch networks.</li>
-                            <li>Make sure your <u className={"text-[#0A4DFE] cursor-pointer"} onClick={openCaptcha}>{name}</u> account is available for messaging.</li>
+                            <li>{t('error.networkConnection')}</li>
+                            <li>{t('error.networkAccount', {model: name})}</li>
                         </ul>
-                        <BlueBtn text='Refresh' handleClick={clickRefresh} />
+                        <BlueBtn text={t('common.refresh')} handleClick={clickRefresh} />
                     </div>;
         }
 
@@ -381,6 +380,7 @@ const AITextContent = ({bot, message, pref, i}: {
     const [currentBotResponseMessage, setCurrentBotResponseMessage] = useState<ConversationResponse[]>([{message_type: ResponseMessageType.GENERATING}]);
     const [activePage, setActivePage] = useState(1);
     const {messageApi} = useContext(SidePanelContext);
+    const {t} = useContext(LocaleContext);
 
     useEffect(() => {
         void start();
@@ -440,7 +440,7 @@ const AITextContent = ({bot, message, pref, i}: {
 
     const copyClick = async () => {
         navigator.clipboard.writeText(currentBotResponseMessage[activePage - 1].message_text ?? '').then(() => {
-            void messageApi.info('Copied successfully');
+            void messageApi.info(t('conversation.copied'));
         });
     };
 
@@ -467,18 +467,18 @@ const AITextContent = ({bot, message, pref, i}: {
                 className={`group-hover:visible flex justify-between items-center  ${isLastChatInList ? 'visible' : 'invisible'}`}>
                 <div className="pl-[16px] flex items-center">
                     {
-                        isLastChatInList && <CTooltip title={"Regenerate"}>
+                        isLastChatInList && <CTooltip title={t('conversation.regenerate')}>
                             <img src={RefreshIcon} className="w-[16px] h-[16px] mr-[8px] cursor-pointer"
                                 onClick={refreshClick}
                                 alt=""/>
                         </CTooltip>
                     }
-                    <CTooltip title={"Copy"}>
+                    <CTooltip title={t('common.copy')}>
                         <img src={CopyIcon} className="w-[16px] h-[16px] mr-[8px] cursor-pointer"
                             onClick={copyClick}
                             alt=""/>
                     </CTooltip>
-                    <CTooltip title={"Quote"}>
+                    <CTooltip title={t('common.quote')}>
                         <img src={QuotaIcon} className="w-[16px] h-[16px] cursor-pointer" onClick={quotaClick}
                             alt=""/>
                     </CTooltip>
@@ -613,16 +613,20 @@ export const AIMessage = memo(({message, i}: {
                             </div>
                             <span className='mr-1 text-[14px]'>{model.botName}</span>
                             {model.paidModel &&
-                                <div
-                                    className="h-5 box-border px-2 py-1 rounded bg-[#C2C2C2] bg-opacity-20 text-[10px] text-[#C2C2C2] font-bold">3rd-paid
-                                </div>
+                                <CTooltip title={t('modelCheck.paidModel')}>
+                                    <div
+                                        className="h-5 box-border px-2 py-1 rounded bg-[#C2C2C2] bg-opacity-20 text-[10px] text-[#C2C2C2] font-bold">3rd-party
+                                    </div>
+                                </CTooltip>
                             }
                         </div>
                         <div className="flex justify-end items-center">
-                            {model.supportUploadPDF && <img className='ml-1' src={IconPdf} alt=""/>}
-                            {model.supportUploadImage && <img className='ml-1' src={IconPic} alt=""/>}
-                            {model.maxTokenLimit && <div
-                                className="ml-1 h-5 box-border px-1 py-0.5 rounded bg-[#4948DB1A] bg-opacity-10 text-[12px] text-[#4948DB] font-medium">{Math.round(model.maxTokenLimit / 1000)}k</div>}
+                            {model.supportUploadPDF && <CTooltip title={t('modelCheck.supportsPDF')}><img className='ml-1' src={IconPdf} alt=""/></CTooltip>}
+                            {model.supportUploadImage && <CTooltip title={t('modelCheck.supportsImage')}><img className='ml-1' src={IconPic} alt=""/></CTooltip>}
+                            {model.maxTokenLimit && <CTooltip title={t('modelCheck.tokenLimit', {tokens: model.maxTokenLimit.toLocaleString()})}>
+                                <div
+                                    className="ml-1 h-5 box-border px-1 py-0.5 rounded bg-[#4948DB1A] bg-opacity-10 text-[12px] text-[#4948DB] font-medium">{Math.round(model.maxTokenLimit / 1000)}k</div>
+                            </CTooltip>}
                         </div>
                         {
                             model.newModel && <img src={NewTag} className='w-6 h-6 absolute right-0 top-0' alt=""/>
@@ -662,7 +666,7 @@ export const AIMessage = memo(({message, i}: {
                                                         <div
                                                             key={item.modelName}
                                                             className="absolute w-6 h-6 top-[-10px] right-[-6px]">
-                                                            <Tooltip title={'Try switching models'}>
+                                                            <Tooltip title={t('modelCheck.trySwitching')}>
                                                                 <Popover overlayClassName='modelPopover'
                                                                     open={popoverOpen}
                                                                     content={popoverContent} title={null}
@@ -712,9 +716,11 @@ export const UserMessage = ({message}: { message: ConversationMessage }) => {
         }, 20);
     }, [containerRef]);
 
+    const {t} = useContext(LocaleContext);
+
     const copyClick = async () => {
         navigator.clipboard.writeText(message?.data?.text ?? "").then(() => {
-            void messageApi.info('Copied successfully');
+            void messageApi.info(t('conversation.copied'));
         });
     };
 
@@ -736,7 +742,7 @@ export const UserMessage = ({message}: { message: ConversationMessage }) => {
             document.body.appendChild(link);
             link.click();
             link.parentNode?.removeChild(link);
-            void messageApi.success('Downloaded successfully');
+            void messageApi.success(t('conversation.downloaded'));
         }
     };
 
@@ -767,13 +773,13 @@ export const UserMessage = ({message}: { message: ConversationMessage }) => {
                             <div className={'flex relative p-[4px] max-w-[200px] max-h-[300px]'}>
                                 <img className={'rounded-[10px] object-cover w-full'} src={message.data.uploadFile ? message.data.uploadFile[0] : ''} alt=''/>
                                 <div className={'flex absolute right-[12px] top-[12px] flex-row-reverse justify-end '}>
-                                    <CTooltip title={'Download'}>
+                                    <CTooltip title={t('common.download')}>
                                         <div
                                             className={style.actionButton} onClick={downloadFile}>
                                             <img className={'w-[16px] h-[16px]'} src={DownloadCardIcon} alt={''}/>
                                         </div>
                                     </CTooltip>
-                                    <CTooltip title={'Quote'}>
+                                    <CTooltip title={t('common.quote')}>
                                         <div
                                             className={style.actionButton} onClick={quotaUploadFileClick}>
                                             <img className={'w-[16px] h-[16px]'} src={QuoteCardIcon} alt={''}/>
@@ -795,13 +801,13 @@ export const UserMessage = ({message}: { message: ConversationMessage }) => {
                                     </div>
                                 </div>
                                 <div className={'flex flex-row-reverse mr-[10px]'}>
-                                    <CTooltip title={'Download'}>
+                                    <CTooltip title={t('common.download')}>
                                         <div
                                             className={style.actionButton} onClick={downloadFile}>
                                             <img className={'w-[16px] h-[16px]'} src={DownloadCardIcon} alt={''}/>
                                         </div>
                                     </CTooltip>
-                                    <CTooltip title={'Quote'}>
+                                    <CTooltip title={t('common.quote')}>
                                         <div
                                             className={style.actionButton} onClick={quotaUploadFileClick}>
                                             <img className={'w-[16px] h-[16px]'} src={QuoteCardIcon} alt={''}/>
@@ -840,12 +846,12 @@ export const UserMessage = ({message}: { message: ConversationMessage }) => {
                 </div>
 
                 {!message.data.isHaveUploadFile && <div className="group-hover:visible pr-[16px] flex items-center justify-end mt-2 invisible">
-                    <CTooltip title={"Copy"}>
+                    <CTooltip title={t('common.copy')}>
                         <img src={CopyIcon} className="w-[16px] h-[16px] mr-[8px] cursor-pointer"
                             onClick={copyClick}
                             alt=""/>
                     </CTooltip>
-                    <CTooltip title={"Quote"}>
+                    <CTooltip title={t('common.quote')}>
                         <img src={QuotaIcon} className="w-[16px] h-[16px] cursor-pointer" onClick={quotaClick}
                             alt=""/>
                     </CTooltip>
@@ -925,6 +931,7 @@ function ConversationContent() {
     const {currentBots,setCurrentBots} = useContext(ModelManagementContext);
     const {setMessages} = useContext(ConversationContext);
     const ref = React.useRef<TextAreaRef>(null);
+    const {t} = useContext(LocaleContext);
     const [modelSelectorOpen, setModelSelectorOpen] = useState(false);
     const [cards] = useStorage('promptData', PromptDatas);
     const [pdfCards] = useStorage('pdfPromptData', PdfPromptDatas);
@@ -934,7 +941,7 @@ function ConversationContent() {
     const [inputValue, setInputValue] = useState('');
     const [inputWarnShow, setInputWarnShow] = useState(false);
     const [isPromptPopShow, setIsPromptPopShow] = useState(false);
-    const [quickPromptBtn, setQuickPromptBtn] = useState<[number, string]>([AskPromptId, 'AskAI']);
+    const [quickPromptBtn, setQuickPromptBtn] = useState<[number, string]>([AskPromptId, t('conversation.askAI')]);
     const promptPop = useRef(null);
     const [promptVisibleTag, setPromptVisibleTag] = useState<number[]>([]);
     const [isUploadAttachment, setIsUploadAttachment] = useState(false);
@@ -967,7 +974,7 @@ function ConversationContent() {
     }
 
     const getModelLoginTag = function (model) {
-        return model.requireLogin ? "Login Required" : "No Login Required";
+        return model.requireLogin ? t('conversation.loginRequired') : t('conversation.noLoginRequired');
     };
 
     const modelSelectorModal = (
@@ -1003,7 +1010,7 @@ function ConversationContent() {
     async function showModelSelector(isShow: boolean) {
         const isUploadingInfo = await getLatestState(setIsUploading);
         if(isUploadingInfo[0] && isUploadingInfo[1]){
-            void message.warning('File is uploading, please wait a moment.');
+            void message.warning(t('conversation.fileUploading'));
             return;
         }
         handleOpenChange(isShow);
@@ -1097,7 +1104,7 @@ function ConversationContent() {
         const isQuotShow = await getLatestState(setIsHaveQuotingText);
         const isUploadingInfo = await getLatestState(setIsUploading);
         if(isUploadingInfo[0] && isUploadingInfo[1]){
-            message.warning('File is uploading, please wait a moment.');
+            void message.warning(t('conversation.fileUploading'));
             return;
         }
         if(isQuotClick){
@@ -1131,7 +1138,7 @@ function ConversationContent() {
         const quickPrompt = await getLatestState(setQuickPromptBtn);
         const isUploadingInfo = await getLatestState(setIsUploading);
         if(isUploadingInfo[0] && isUploadingInfo[1]){
-            message.warning('File is uploading, please wait a moment.');
+            message.warning(t('conversation.fileUploading'));
             return;
         }
         if (inputText && inputText.trim()) {
@@ -1219,7 +1226,7 @@ function ConversationContent() {
             Logger.log('beforeUpload=================', file);
             if(file.size > MAX_FILE_SIZE){
                 setUploadBorderColo('#F93943');
-                void message.error('File must smaller than 20MB!');
+                void message.error(t('conversation.fileTooLarge'));
             }else {
                 setIsUploadAttachment(false);
                 Logger.log('file.type=================', file.type);
@@ -1236,7 +1243,7 @@ function ConversationContent() {
     async function showUploadFile(){
         const isUploadingInfo = await getLatestState(setIsUploading);
         if(isUploadingInfo[0] && isUploadingInfo[1]){
-            void message.warning('File is uploading, please wait a moment.');
+            void message.warning(t('conversation.fileUploading'));
             return;
         }
         setUploadBorderColo('#C2C2C2');
@@ -1282,7 +1289,7 @@ function ConversationContent() {
     async function handlePaste(e: React.ClipboardEvent) {
         const isUploadingInfo = await getLatestState(setIsUploading);
         if(isUploadingInfo[0] && isUploadingInfo[1]){
-            void message.warning('File is uploading, please wait a moment.');
+            void message.warning(t('conversation.fileUploading'));
             return;
         }
         const items = Array.from(e.clipboardData.items) as DataTransferItem[];
@@ -1297,7 +1304,7 @@ function ConversationContent() {
         if (latestFile !== null) {
             e.preventDefault();
             if(latestFile.size > MAX_FILE_SIZE){
-                void message.error('File must smaller than 20MB!');
+                void message.error(t('conversation.fileTooLarge'));
             }else {
                 void fileUpload(latestFile);
             }
@@ -1460,7 +1467,7 @@ function ConversationContent() {
                     className={'w-full px-[12px] py-[8px] text-black align-top bg overflow-auto whitespace-pre-wrap resize-none focus:bg-transparent focus:shadow-none focus:border-none focus:outline-none hover:bg-transparent hover:shadow-none hover:border-none hover:outline-none'}
                     autoFocus={true}
                     onFocus={() => textInputFocus()}
-                    placeholder="Enter message..."
+                    placeholder={t('conversation.placeholder')}
                     onKeyDown={(e) => handleKeyDown(e)}
                     value={inputValue}
                     onChange={(e) => {
@@ -1488,20 +1495,20 @@ function ConversationContent() {
                         onClick={() => goAskAi()}/>
                     <div
                         className={'flex justify-center items-center h-[25px] text-[#C2C2C2] bg-[#F3F4F9] rounded-[8px] px-[8px] py-[4px] text-[12px] font-[400] mr-[8px] whitespace-nowrap cursor-pointer'}
-                        onClick={() => goAskAi()}>{`⏎ ${quickPromptBtn[1]}`}</div>
+                        onClick={() => goAskAi()}>{`⏎ ${t('conversation.askAI')}`}</div>
                 </div>
             </div>
         </div>
         <Modal open={isUploadAttachment} className={'absolute top-[calc(50%-200px)] left-0 right-0 p-0 modelUpload bg-transparent overflow-hidden'} footer={[]} closable={false} width='600px'>
             <div className={'flex flex-col justify-start w-full h-full bg-[#F3F4F9] rounded-[16px] overflow-hidden'}>
                 <div className={'flex flex-row justify-between items-center px-[16px] mt-[12px]'}>
-                    <div className={'text-[#C2C2C2] text-[16px] font-[700]'}>Upload file</div>
+                    <div className={'text-[#C2C2C2] text-[16px] font-[700]'}>{t('conversation.uploadFile')}</div>
                     <img className={'w-[16px] h-[16px] cursor-pointer'} src={UploadCloseIcon} alt='' onClick={(e)=>{
                         e.stopPropagation();
                         setIsUploadAttachment(false);}}/>
                 </div>
                 <div className={'flex flex-col w-auto justify-start bg-white rounded-[16px] ml-[4px] mr-[4px] mb-[4px] mt-[12px]'}>
-                    <div className={'text-[#5E5E5E] text-[14px] mt-[16px] mx-[24px]'}>Upload a file to receive intelligent answers to your questions or requests</div>
+                    <div className={'text-[#5E5E5E] text-[14px] mt-[16px] mx-[24px]'}>{t('conversation.uploadTitle')}</div>
                     <div
                         className={`w-auto m-[16px] border-[1px] border-dashed rounded-[8px] hover:rounded-[8px]`}
                         style={{borderColor: uploadBorderColor,backgroundColor:uploadBackgroundColor}} onMouseEnter={onUploadEnter} onMouseLeave={onUploadLeave} onDragOver={onUploadEnter} onDragLeave={onUploadLeave}>
@@ -1509,9 +1516,9 @@ function ConversationContent() {
                             <p className="ant-upload-drag-icon">
                                 <UploadOutlined className={' w-[32px] h-[32px]'} style={{color: '#C2C2C2'}}/>
                             </p>
-                            <p className="ant-upload-text text-[#333333]">Drag and drop here to upload or</p>
-                            <p className="text-[16px] mb-[4px] text-[#0A4DFE] underline block">click to upload</p>
-                            <p className="ant-upload-hint">Depending on the different models, support for file formats such as PDF, TXT, PNG, etc. (max size 20MB)</p>
+                            <p className="ant-upload-text text-[#333333]">{t('conversation.dragAndDrop')}</p>
+                            <p className="text-[16px] mb-[4px] text-[#0A4DFE] underline block">{t('conversation.clickToUpload')}</p>
+                            <p className="ant-upload-hint">{t('conversation.uploadHint')}</p>
                         </Dragger>
                     </div>
                 </div>

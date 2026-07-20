@@ -14,6 +14,7 @@ import NewTag from "data-base64:~assets/new_tag.svg";
 import {Logger} from "~utils/logger";
 import lottie from "lottie-web";
 import {ConversationContext} from "~provider/sidepanel/ConversationProvider";
+import {LocaleContext} from "~libs/i18n";
 
 const LockAnimation = () => {
     const lockRef = useRef<HTMLDivElement>(null);
@@ -40,6 +41,7 @@ const ModelItems = ({item}: { item: CMsItem }) => {
     const [isOpenProviderToolTip, setIsOpenProviderToolTip] = useState(false);
     const {conversationId} = useContext(ConversationContext);
     const labelTipRef = useRef<HTMLDivElement>(null);
+    const {t} = useContext(LocaleContext);
 
     useEffect(() => {
         getLoginStatus();
@@ -74,14 +76,12 @@ const ModelItems = ({item}: { item: CMsItem }) => {
         if (!loginUrl) {
             return <div ref={labelTipRef} className='px-1 py-[6px] text-[14px] text-white text-opacity-60 flex justify-start items-center'>
                 <LockAnimation />
-                <div className='ml-1'>Login not required for this provider.</div>
+                <div className='ml-1'>{t('modelCheck.loginNotRequired')}</div>
             </div>;
         }
         return <div ref={labelTipRef} className='px-1 py-[6px] text-[14px] text-white text-opacity-60 flex justify-start items-center'>
             <LockAnimation />
-            <div className='ml-1'>Log into&nbsp;</ div>
-            <u className='text-white cursor-pointer' onClick={() => {openLogin(firstModel);}}>{new URL(loginUrl).hostname}</u>
-            &nbsp;to use
+            <div className='ml-1'>{t('modelCheck.logInto', {host: new URL(loginUrl).hostname})}</div>
         </div>;
     };
 
@@ -104,7 +104,7 @@ const ModelItems = ({item}: { item: CMsItem }) => {
             item.models.length > 3 && !isShowMore &&
             <div className='w-full flex justify-center items-center my-2 cursor-pointer' onClick={() => showMore(true)}>
                 <img src={ShowMore} className='w-4 h-4 mr-1' alt=""/>
-                <span className='text-[12px] text-[#C2C2C2] mr-1'>{item.models.length - 3} models remaining</span>
+                <span className='text-[12px] text-[#C2C2C2] mr-1'>{t('modelCheck.modelsRemaining', {count: item.models.length - 3})}</span>
                 <img src={ShowMore} className='w-4 h-4' alt=""/>
             </div>
         }
@@ -115,6 +115,7 @@ const ModelItem = ({model, isLogin, setIsOpenProviderToolTip, getLoginStatus} : 
     const [modelCanUse, setModelCanUse] = useState(false);
     const {conversationId} = useContext(ConversationContext);
     const {currentBots, setCurrentBots, saveCurrentBotsKeyLocal} = useContext(ModelManagementContext);
+    const {t} = useContext(LocaleContext);
 
     useEffect(() => {
         getUseStatus();
@@ -164,13 +165,13 @@ const ModelItem = ({model, isLogin, setIsOpenProviderToolTip, getLoginStatus} : 
         return <div className='px-1 py-[6px] text-[14px]'>
             <div className="font-bold mb-1">{model.botName}</div>
             <div className="mb-2 text-white text-opacity-60">
-                {loginUrl ? (modelCanUse ? 'Provided by ' : 'Log into ') : ''}
+                {loginUrl ? (modelCanUse ? t('modelCheck.providedBy', {host: new URL(loginUrl).hostname}) : t('modelCheck.logIntoAction', {host: new URL(loginUrl).hostname})) : ''}
                 {loginUrl ? (
                     <u className='text-white cursor-pointer' onClick={() => {openLogin(model);}}>{new URL(loginUrl).hostname}</u>
                 ) : (
-                    <span>API key based</span>
+                    <span>{t('modelCheck.apiKeyBased')}</span>
                 )}
-                {loginUrl && !modelCanUse ? ' and confirm you can access this model' : ''}
+                {loginUrl && !modelCanUse ? ' ' + t('modelCheck.confirmAccess') : ''}
             </div>
             <div className='text-[12px] text-white text-opacity-60'>{model.desc}</div>
         </div>;
@@ -193,9 +194,9 @@ const ModelItem = ({model, isLogin, setIsOpenProviderToolTip, getLoginStatus} : 
             </Tooltip>
             {
                 model.paidModel &&
-                <Tooltip title={'This model needs to be paid at the provider’s website.'}>
+                <Tooltip title={t('modelCheck.paidModel')}>
                     <div
-                        className="h-5 box-border px-2 py-1 rounded bg-[#C2C2C2] bg-opacity-20 text-[10px] text-[#C2C2C2] font-bold">3rd-paid
+                        className="h-5 box-border px-2 py-1 rounded bg-[#C2C2C2] bg-opacity-20 text-[10px] text-[#C2C2C2] font-bold">3rd-party
                     </div>
                 </Tooltip>
             }
@@ -203,15 +204,15 @@ const ModelItem = ({model, isLogin, setIsOpenProviderToolTip, getLoginStatus} : 
         <div className="flex justify-end items-center">
             {
                 model.supportUploadPDF &&
-                <Tooltip title={'This model can analyze PDF document.'}><img className='ml-1 w-5 h-5' src={IconPdf} alt=""/></Tooltip>
+                <Tooltip title={t('modelCheck.supportsPDF')}><img className='ml-1 w-5 h-5' src={IconPdf} alt=""/></Tooltip>
             }
             {
                 model.supportUploadImage &&
-                <Tooltip title={'This model can analyze image.'}><img className='ml-1 w-5 h-5' src={IconPic} alt=""/></Tooltip>
+                <Tooltip title={t('modelCheck.supportsImage')}><img className='ml-1 w-5 h-5' src={IconPic} alt=""/></Tooltip>
             }
             {
                 model.maxTokenLimit &&
-                <Tooltip title={'This model supports up to 128.000 tokens in a single session'}>
+                <Tooltip title={t('modelCheck.tokenLimit', {tokens: model.maxTokenLimit.toLocaleString()})}>
                     <div className="flex justify-center items-center ml-1 h-5 rounded bg-[#4948DB1A] bg-opacity-10 text-[12px] text-[#4948DB] font-medium px-1 leading-none">{formatTokenLimit(model.maxTokenLimit)}k</div>
                 </Tooltip>
             }
@@ -228,6 +229,7 @@ interface Props {
 
 export const ModelCheckList = ({onClose}: Props) => {
     const {currentBots, setCurrentBots, saveCurrentBotsKeyLocal, categoryModels} = useContext(ModelManagementContext);
+    const {t} = useContext(LocaleContext);
 
     useEffect(() => {
         Logger.log('hello=======');
@@ -243,7 +245,7 @@ export const ModelCheckList = ({onClose}: Props) => {
     return (
         <div>
             <div className="flex justify-between items-center h-[64px] sticky top-0 z-10 px-4 bg-white">
-                <span className='text-[20px] text-[#333333] font-bold'>AI Models</span>
+                <span className='text-[20px] text-[#333333] font-bold'>{t('modelCheck.title')}</span>
                 <CloseCircleOutlined onClick={onClose} style={{fontSize: '24px', color: '#5E5E5E'}}/>
             </div>
             <div className='border-t border-[#F3F4F9] p-4 sticky top-[64px] z-10 bg-white'>
@@ -252,8 +254,6 @@ export const ModelCheckList = ({onClose}: Props) => {
                         currentBots.map((item, index) => {
                             return <div key={index}
                                 className="relative group hover:shadow-[0_0_6px_0px_rgba(0,0,0,0.2)] rounded-[12.5px] bg-white px-2 py-[4.5px] flex items-center justify-start mb-2 ml-2 flex-1 max-w-[48%]">
-                                {/*<div*/}
-                                {/*    className="bg-[#C2C2C233] bg-opacity-20 text-[#C2C2C2] text-[10px] w-4 h-4 rounded-full mr-2 flex justify-center items-center">{index + 1}</div>*/}
                                 <img className='mr-2 w-4 h-4' src={item.logoSrc} alt=''/>
                                 <div className="text-[12px] text-[#333333] mr-3 truncate">{item.botName}</div>
                                 {

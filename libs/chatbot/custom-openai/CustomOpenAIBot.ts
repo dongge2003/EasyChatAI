@@ -14,7 +14,7 @@ export class CustomOpenAIBot extends BotBase implements IBot {
     /* --- Static metadata (overridden by generated subclasses) --- */
     static botName = 'Custom Model';
     static logoSrc = '';
-    static desc = 'Custom OpenAI-compatible model';
+    static desc = '自定义 OpenAI 兼容模型 / Custom OpenAI-compatible model';
     static requireLogin = false;
     static supportUploadPDF = false;
     static supportUploadImage = false;

@@ -31,6 +31,8 @@ import PupHeaderIcon from "data-base64:~assets/icon_pup_header.svg";
 import {SearchBar} from "~options/component/SearchBar";
 import {Logger} from "~utils/logger";
 import {BASE_ZINDEX} from "~component/common/CPopover";
+import {LocaleContext} from "~libs/i18n";
+import {useContext} from "react";
 
 export const getStyle: PlasmoGetStyle = () => {
     const style = document.createElement("style");
@@ -70,6 +72,7 @@ let selectPopType = 1;
 let tempHostNames:string[] = [];
 
 export default function Base() {
+    const {t} = useContext(LocaleContext);
     const [toolPositions, setToolPositions] = useState([0, 0]); // [x, y]
     const [showTool, setShowTool] = useState(false);
     const [selectedText, setSelectedText] = useState("");
@@ -334,7 +337,7 @@ export default function Base() {
     const popupPrompt =  (
         <div className={baseContentStyle.popupPrompt}>
             <div className={baseContentStyle.header}>
-                <div className={baseContentStyle.title} >Shortcut Menu</div>
+                <div className={baseContentStyle.title} >{t('content.shortcutMenu')}</div>
                 <img className={baseContentStyle.iconImage} src={popupSettingIcon} alt='' onClick={() => {
                     window.open(`chrome-extension://${chrome.runtime.id}/options.html`);
                 }}/>
@@ -384,8 +387,8 @@ export default function Base() {
 
     const popupQuickPromptConfig = (
         <div className={baseContentStyle.popupQuickConfig}>
-            <div onClick={(e) => dealQuickBarVisibleConfig(e,1)}>Hide until Next visit</div>
-            <div onClick={(e) => dealQuickBarVisibleConfig(e,2)}>Disable for this site</div>
+            <div onClick={(e) => dealQuickBarVisibleConfig(e,1)}>{t('content.hideUntilNextVisit')}</div>
+            <div onClick={(e) => dealQuickBarVisibleConfig(e,2)}>{t('content.disableForSite')}</div>
         </div>
     );
 
@@ -521,7 +524,7 @@ export default function Base() {
                 className={'justify-start bg-[#F2F5FF] leading-[24px] p-[16px] text-black font-weight-400 text-[15px]'}>
                 <p>
                     {selectedText}
-                    <CTooltip title="Edit a quote" autoAdjustOverflow={true} placement="bottom" overlayStyle={{
+                    <CTooltip title={t('conversation.editQuote')} autoAdjustOverflow={true} placement="bottom" overlayStyle={{
                         background: '#000000',
                         borderRadius: '8px',
                         boxShadow: '0 4px 12px 0px rgba(0,0,0,.2)'
@@ -539,13 +542,13 @@ export default function Base() {
                         setAskInputValue(e.target.value);
                     }}
                     className={'p-[16px] border-none font-sans text-[15px] text-black leading-tight focus:outline-none focus:shadow-outline bg-transparent align-top overflow-auto whitespace-pre-wrap resize-none'}
-                    placeholder={'Input your Question'}
+                    placeholder={t('conversation.inputQuestion')}
                     autoFocus={true}
                     onKeyDown={(e) =>handleKeyDown(e)}
                 />
                 <div className={'flex flex-row justify-between mt-[8px] me-[16px] items-center mb-[8px]'}>
                     <div
-                        className={'h-[25px] text-[#C2C2C2] bg-[#F3F4F9] rounded-tr-[8px] rounded-br-[8px] px-[8px] py-[4px] text-[12px] font-[400] me-[12px] whitespace-nowrap cursor-pointer flex justify-center items-center'} onClick={()=>sendAskAIDefault()}>{'⏎ AskAI'}</div>
+                        className={'h-[25px] text-[#C2C2C2] bg-[#F3F4F9] rounded-tr-[8px] rounded-br-[8px] px-[8px] py-[4px] text-[12px] font-[400] me-[12px] whitespace-nowrap cursor-pointer flex justify-center items-center'} onClick={()=>sendAskAIDefault()}>{`⏎ ${t('conversation.askAI')}`}</div>
                     <SearchBar cards={cards} popupPrompt={popupPrompt} isVisible={visible ?? false}
                         onOpenChange={(visibleAskPop) => {
                             Logger.log(`visibleAskPop=================${visibleAskPop}`);

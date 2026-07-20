@@ -27,7 +27,7 @@ export function getOrCreateCustomModelClass(
         static _modelNameForCompletion = modelName;
         static botName = displayName;
         static logoSrc = logoSrc;
-        static desc = `Custom OpenAI-compatible model via "${providerConfig.name}"`;
+        static desc = `自定义 OpenAI 兼容模型 / Custom OpenAI-compatible model via "${providerConfig.name}"`;
         static requireLogin = false;
         static maxTokenLimit = 128 * 1000;
         static supportUploadPDF = false;
