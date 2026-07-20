@@ -5,7 +5,7 @@ import {Input, List, message, Modal, Popover, Tooltip, type UploadProps} from "a
 import {CaretDownOutlined, LoadingOutlined, UploadOutlined} from "@ant-design/icons";
 import {ConversationResponse, ResponseMessageType} from "~libs/open-ai/open-ai-interface";
 import {ConversationContext, ConversationMessage, ConversationProvider} from "~provider/sidepanel/ConversationProvider";
-import {IAskAi, openPanelSearchInContent} from "~libs/open-ai/open-panel";
+import {IAskAi} from "~libs/open-ai/open-panel";
 import {
     createUuid,
     debounce,
@@ -39,7 +39,6 @@ import {getGrayImageSrc, getImageBlueSrc, getImageSrc} from "~options/component/
 import TriangleIcon from "data-base64:~assets/icon_triangle.svg";
 import SendMsgIcon from "data-base64:~assets/icon_chat_send_msg.svg";
 import {QuotingType} from "~sidepanel/constant/QuotingType";
-import SearchBannerIcon from "data-base64:~assets/icon_search_banner.svg";
 import {mergeAiMsg} from "~contents/base";
 import eventBus from "~libs/EventBus";
 import EventBus from "~libs/EventBus";
@@ -1032,16 +1031,6 @@ function ConversationContent() {
         chrome.runtime.onMessage.addListener(handleMessage);
         document.body.addEventListener('mousedown', handleMouseDown);
 
-        document.body.addEventListener('keydown', (e) => {
-            if (e.shiftKey && e.metaKey && e.code === 'Enter') {
-                goToSearch(e).then(() => {
-                    Logger.log('goToSearchByAskBar is completed');
-                }).catch((error) => {
-                    Logger.log('goToSearchByAskBar is Error: ', error);
-                });
-            }
-        });
-
         return () => {
             chrome.runtime.onMessage.removeListener(handleMessage);
             document.body.removeEventListener('mousedown', handleMouseDown);
@@ -1195,26 +1184,6 @@ function ConversationContent() {
         const userMessage = new ConversationMessage('user', message, currentBots);
         const botMessage = new ConversationMessage('bot', message, currentBots);
         setMessages(preState => [...preState, userMessage, botMessage]);
-    }
-
-    async function goToSearch(e) {
-        e.stopPropagation();
-        const inputText = await getLatestState(setInputValue);
-        const quotText = await getLatestState(setQuotingText);
-        const isQuotShow = await getLatestState(setIsHaveQuotingText);
-
-        if ((!quotText[1] || !quotText[1].trim()) && (!inputText || !inputText.trim())) {
-            return;
-        }
-
-        if (isQuotShow && quotText[1] && inputText && inputText.trim()) {
-            openPanelSearchInContent(mergeAiMsg(inputText, quotText[1]));
-        } else if (inputText && inputText.trim()) {
-            openPanelSearchInContent(inputText);
-        } else if (isQuotShow && quotText[1]) {
-            openPanelSearchInContent(quotText[1]);
-        }
-        clearInputArea();
     }
 
     function clearInputArea() {
@@ -1399,27 +1368,6 @@ function ConversationContent() {
                 }
                 }>
             </List>
-            <div style={{display: !isUploading[0]&&!isHaveQuotingText && !isQuotClick ? 'block' : 'none'}}
-                className={'w-full bg-[#F6F6F6] h-[1px]'}/>
-            <div style={{display: isUploading[0]||(isHaveQuotingText && isQuotClick)? 'none' : 'flex', paddingLeft: '16px'}}
-                className={'h-[40px] box-border w-full flex flex-row justify-between items-center hover:bg-[#F2F5FF]'}
-                onClick={(e) => goToSearch(e)}>
-                <div className={'flex items-center'}>
-                    <img style={{
-                        height: '16px',
-                        width: '16px',
-                    }} src={SearchBannerIcon} alt={''}/>
-                    <div style={{
-                        fontSize: '13px',
-                        color: '#5E5E5E',
-                        paddingLeft: '8px',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                    }}>{'AI Search'}</div>
-                </div>
-                <div className={'w-fit text-right text-[#C2C2C2] text-[12px] mr-[16px]'}>{'⇧ ⌘ ⏎'}</div>
-            </div>
         </div>
     );
 

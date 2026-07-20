@@ -64,10 +64,9 @@ function TopWrapper({children}: { children: React.ReactNode }) {
         {/*</div>*/}
 
         <div className={style.theContainer}>
-            <div className={style.searchContentWrap}>
+            <div style={{flex: 1, overflow: 'hidden'}}>
                 {windowHeight > 0 ? children : null}
             </div>
-            {/*<div className={style.drawer} style={{height: `${windowHeight}px`}}>hello</div>*/}
         </div>
     </div>;
 }

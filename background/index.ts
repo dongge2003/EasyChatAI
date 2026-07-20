@@ -82,19 +82,9 @@ const injectContentScript = async function () {
     }
 };
 
-const openGuidePageAfterInstall = function () {
-    chrome.tabs.create({
-        url: `chrome-extension://${chrome.runtime.id}/tabs/greeting.html`,
-        active: true
-    }, function(tab) {
-        Logger.log("New tab opened at index " + tab.index);
-    });
-};
-
 chrome.runtime.onInstalled.addListener(async () => {
     void Analytics.fireEvent('install');
     void injectContentScript();
-    openGuidePageAfterInstall();
 });
 
 chrome.action.onClicked.addListener(() => {

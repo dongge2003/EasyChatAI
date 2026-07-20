@@ -34,3 +34,8 @@ dist/
 
 .idea
 
+
+# AI
+.claude/
+CLAUDE.md
+

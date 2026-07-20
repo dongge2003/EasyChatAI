@@ -1,6 +1,5 @@
 import React from "react";
 import CTooltip from "~component/common/CTooltip";
-import newSearchIcon from "data-base64:~assets/icon_search_new.svg";
 import {getIconSrc} from "~options/component/AiEnginePage";
 import {PromptTypes} from "~options/constant/PromptTypes";
 import {getImageSrc} from "~options/component/Card";
@@ -25,9 +24,8 @@ export interface SearchBarProps {
     isVisible: boolean
     onOpenChange: (visible: boolean) => void
     onItemClick: (id: number) => void
-    onItemSearchClick: () => void
 }
-export const SearchBar = ({ cards, popupPrompt,isVisible,onOpenChange,onItemClick,onItemSearchClick}: SearchBarProps) => {
+export const SearchBar = ({ cards, popupPrompt,isVisible,onOpenChange,onItemClick}: SearchBarProps) => {
     return <div style={{
         display: 'flex',
         justifyContent: 'start',
@@ -35,19 +33,6 @@ export const SearchBar = ({ cards, popupPrompt,isVisible,onOpenChange,onItemClic
         alignItems: 'center',
     }}>
         <div className={'flex flex-row justify-start max-w-[500px] overflow-x-auto overflow-y-hidden hideScrollBar'}>
-            <CTooltip title='Search' autoAdjustOverflow={true} placement="top" overlayStyle={{
-                background: '#000000',
-                borderRadius: '8px',
-                boxShadow: '0 4px 12px 0px rgba(0,0,0,.2)'
-            }} overlayInnerStyle={{textAlign: 'center'}}>
-                <div
-                    className={'flex w-[28px] h-[28px] rounded-[4px] justify-center items-center bg-white hover:bg-[#F2F5FF]'}>
-                    <img className={'w-[16px] h-[16px] cursor-pointer'} src={newSearchIcon} alt=''
-                        onClick={() => {
-                            onItemSearchClick();
-                        }}/>
-                </div>
-            </CTooltip>
             {
                 cards.filter((card) => card.isSelect).map((car) => {
                     const ItemIcon = getIconSrc(car.imageKey);

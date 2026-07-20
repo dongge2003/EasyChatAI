@@ -69,23 +69,16 @@ export const openPanelAskAi = function (askAi: IAskAi) {
     openPanel(OpenPanelType.AI_ASK, askAi);
 };
 
-export const openPanelSearchInContent = function (text: string) {
-    Logger.log(`openPanelSearchInContent(Performing a search)============${text}`);
-    openPanel(OpenPanelType.SEARCH, text);
-};
-
 export enum OpenPanelType {
-    SEARCH = 'search',
     AI_ASK = 'ai_ask',
 }
 
 export interface IOpenPanelData {
     openType: OpenPanelType;
-    data: IAskAi | string;
+    data: IAskAi;
 }
 
-// when openType === search， data is string
-const openPanel = function (openType: OpenPanelType, data: IAskAi | string) {
+const openPanel = function (openType: OpenPanelType, data: IAskAi) {
     const storage = new Storage();
 
     storage.set(STORAGE_OPEN_PANEL_INIT_DATA, {

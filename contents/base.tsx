@@ -26,8 +26,7 @@ import DingUnSelectIcon from "data-base64:~assets/icon_ding_unselect.svg";
 import update from "immutability-helper";
 import SmallAskAiIcon from "data-base64:~assets/icon_ask_ai_small.svg";
 import askCloseIcon from "data-base64:~assets/icon_ask_close.svg";
-import {IAskAi, openPanelAskAi, openPanelSearchInContent} from "~libs/open-ai/open-panel";
-import SearchBannerIcon from "data-base64:~assets/icon_search_banner.svg";
+import {IAskAi, openPanelAskAi} from "~libs/open-ai/open-panel";
 import PupHeaderIcon from "data-base64:~assets/icon_pup_header.svg";
 import {SearchBar} from "~options/component/SearchBar";
 import {Logger} from "~utils/logger";
@@ -201,30 +200,6 @@ export default function Base() {
         showAskBar(true);
     };
 
-    function goToSearch(msg:string) {
-        if (msg && msg.trim()) {
-            Logger.log(`search=========${msg}`);
-            openPanelSearchInContent(msg);
-            closeAllPop();
-        }
-    }
-
-    async function goToSearchByAskBar() {
-        const isQuotShow = await getLatestState(setShowAskContent);
-        const quotingText = await getLatestState(setSelectedText);
-        const askBarText = await getLatestState(setAskInputValue);
-        const isAskBarShow = await getLatestState(setShowAskSearch);
-        if(isAskBarShow){
-            if (isQuotShow && quotingText && quotingText.trim() && askBarText && askBarText.trim()) {
-                goToSearch(mergeAiMsg(askBarText,quotingText));
-            } else if (askBarText && askBarText.trim()) {
-                goToSearch(askBarText);
-            } else if (isQuotShow && quotingText && quotingText.trim()) {
-                goToSearch(quotingText);
-            }
-        }
-    }
-
     async function sendAskAIDefault() {
         const isAskBarShow = await getLatestState(setShowAskSearch);
         const isQuotShow = await getLatestState(setShowAskContent);
@@ -327,14 +302,7 @@ export default function Base() {
             });
 
             document.body.addEventListener('keydown', (e) => {
-                if (e.shiftKey && e.metaKey && e.key === 'Enter') {
-                    Logger.log('viewGroup shiftKey and metaKey and Enter ==============');
-                    goToSearchByAskBar().then(() => {
-                        Logger.log('goToSearchByAskBar is completed');
-                    }).catch((error) => {
-                        Logger.log('goToSearchByAskBar is Error: ', error);
-                    });
-                }else if ((e.metaKey || e.ctrlKey) && e.key === 'j') {
+                if ((e.metaKey || e.ctrlKey) && e.key === 'j') {
                     e.preventDefault();
                     e.stopPropagation();
                     showAskBar();
@@ -447,13 +415,7 @@ export default function Base() {
 
     const handleKeyDown = (e) => {
         if (e.shiftKey && e.metaKey && e.key === 'Enter') {
-            Logger.log('input shiftKey and metaKey and Enter ==============');
             e.preventDefault();
-            goToSearchByAskBar().then(() => {
-                Logger.log('goToSearchByAskBar is completed');
-            }).catch((error) => {
-                Logger.log('goToSearchByAskBar is Error: ', error);
-            });
         } else if (((e.metaKey || e.ctrlKey) || e.shiftKey) && e.key === 'Enter') {
             e.preventDefault();
             setAskInputValue(askInputValue + '\n');
@@ -500,7 +462,7 @@ export default function Base() {
                             Logger.log(`popIsShowByShortcuts=================${popIsShowByShortcuts}`);
                             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                             // @ts-expect-error
-                            setVisiblePop(visiblePopup);}} onItemClick={(id)=>{goToAskEngine(selectedText,id,null);}} onItemSearchClick={()=>{goToSearch(selectedText);}}/>
+                            setVisiblePop(visiblePopup);}} onItemClick={(id)=>{goToAskEngine(selectedText,id,null);}}/>
                     </div>
                     <div className={"w-[1px] h-[24px] bg-[#000000] opacity-20 ms-[8px]"}></div>
 
@@ -538,7 +500,7 @@ export default function Base() {
                 borderRadius: '8px',
                 boxShadow: '0 4px 12px 0px rgba(0,0,0,.2)'
             }} overlayInnerStyle={{textAlign: 'center'}}>
-                <img className={'block w-[20px] h-[20px] mx-auto my-auto'} src={SearchBannerIcon} alt=''/>
+                <img className={'block w-[20px] h-[20px] mx-auto my-auto'} src={SmallAskAiIcon} alt=''/>
             </CTooltip>
         </div>
 
@@ -596,7 +558,6 @@ export default function Base() {
                             setVisible(visibleAskPop);
                         }}
                         onItemClick={(id) => sendAskAI(id)}
-                        onItemSearchClick={() => goToSearchByAskBar()}
                     />
                 </div>
             </div>
