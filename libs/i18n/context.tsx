@@ -25,6 +25,12 @@ const LOCALE_DATA: Record<Locale, Record<string, any>> = {
 
 // ============ Locale fallback key displaying ============
 function resolveKey(data: Record<string, any>, key: string): string | undefined {
+  // Fast path: key exists as-is (flat key like "header.title")
+  if (key in data) {
+    const val = data[key];
+    return typeof val === "string" ? val : undefined;
+  }
+  // Fallback: dot-traversal (for potential future nested objects)
   const parts = key.split(".");
   let current: any = data;
   for (const part of parts) {
