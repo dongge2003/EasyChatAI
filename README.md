@@ -1,108 +1,72 @@
 <div align="center">
-<img src="https://raw.githubusercontent.com/luyu0279/BrainyAi/main/misc/logo.png" width="350px">
-<h2>EasyChatAI: a free and open-source browser sidebar plugin that offers a cost-free alternative to products like Sider, Monica, and Merlin. </h2>
+<h2>EasyChatAI：一个开源的浏览器侧边栏插件，提供类似 Sider、Monica 和 Merlin 等产品的免费替代方案</h2>
 
 [![GitHub license](https://img.shields.io/badge/license-GPL%203.0-blue)](https://github.com/luyu0279/BrainyAi/blob/main/LICENSE)
 
-English ｜ [简体中文](README_ZH-CN.md)
-<p>
-  <a style="font-size: 28px" href="https://chromewebstore.google.com/detail/brainyai/jmcllpdchgacpnpgechgncndkfdogdah?utm_source=github&utm_medium=pr&utm_campaign=0614">
-  ⏬⏬ Download EasyChatAI from Chrome Web Store
-</a>
-</p>
+[English](README_EN.md) ｜ 简体中文
 </div>
 
 <br>
 
-## Introduction
-
-🧠**EasyChatAI** is a completely free Chrome browser extension. Users only need to log in once to various AI websites, and then they can bring the capabilities of large models into their daily work habits and scenarios using EasyChatAI. With a convenient sidebar, **EasyChatAI** offers features such as AI chat aggregation, AI search, AI reading, and enhanced AI web browsing.
-
-When using **EasyChatAI**, users don’t need to leave their current web page. They can leverage advanced large language models like **GPT-4**, **GPT-4o**, **Claude**, **Gemini**, **Moonshot**, and **LLaMA3** for tasks such as conversation, search, summarizing web pages, and reading files—all completely free. EasyChatAI is a free alternative to similar products like **[Sider AI](https://sider.ai)**, **[Monica](https://monica.im)**, **[Merlin](https://www.getmerlin.in)**, and **[MaxAI](https:///www.maxai.me)**. 🌐
-
+> 📌 **本项目基于 [BrainyAI](https://github.com/luyu0279/BrainyAI) 进行持续开发和维护。**  
+> 感谢 [luyu0279](https://github.com/luyu0279) 创建了原始项目。
 
 <br>
 
+## 简介
 
-## Key features
+🧠 **EasyChatAI** 是一个完全免费的 Chrome 浏览器扩展程序。您只需设置好模型，即可通过便捷的侧边栏将大模型能力融入日常工作与生活。EasyChatAI  AI 网页浏览功能。
 
-- 🤖 Group Chat with Top-Tier AIs at Once, for Free
-- 🔍 Multiple Answers from Top-Tier AI Search Engines, for Free
-- 📚 Top-Tier AIs to assist with Web/YouTube summaries, for Free
-- 💬 Engage in conversations with Top-Tier AIs across documents, for Free
-
+使用 EasyChatAI 时，无需离开当前页面。您可以用大语言模型进行对话、网页摘要和文件阅读——完全免费。它是 **[Sider AI](https://sider.ai)**、**[Monica](https://monica.im)**、**[Merlin](https://www.getmerlin.in)** 和 **[MaxAI](https://www.maxai.me)** 等产品的免费替代品。🌐
 
 <br>
 
+## 主要特性
 
-| Features | Screenshot                                                                                         | 
-| -------- |----------------------------------------------------------------------------------------------------| 
-| Group Chat     | ![20240614-190440](https://raw.githubusercontent.com/luyu0279/BrainyAi/main/misc/group_chat.gif)   | 
-| Multiple Answers from Top-Tier AI Search Engines  | ![20240614-191334](https://raw.githubusercontent.com/luyu0279/BrainyAi/main/misc/multi_answer.gif) | 
-| Web/YouTube summaries     | ![20240614-191334](https://raw.githubusercontent.com/luyu0279/BrainyAi/main/misc/summaries.gif)                                       | 
+### 🔌 自定义模型提供商（最大新特性）
+
+EasyChatAI 最大的独特优势：**支持您添加任意 OpenAI 兼容的 API 提供商**。
+
+- 在选项页中添加 OpenAI 兼容的 API 端点（任何支持 `/v1/chat/completions` 的服务）
+- 自动通过 `/v1/models` 接口发现可用模型
+- 灵活选择要在侧边栏中使用的模型
+- 支持流式 SSE 输出、图片多模态输入
+
+这意味着您可以使用自建的 OpenAI 代理、第三方托管服务、企业内部模型网关等任何兼容 OpenAI API 格式的模型——不受我们内置模型列表的限制。
 
 
+### 📚 AI 阅读与摘要
 
+- 网页摘要：一键获取当前页面的 AI 摘要
+- 文件上传阅读：支持 PDF、图片等文件的分析
+
+### 🎯 智能上下文感知
+
+- 选中任意网页文本，弹出浮动工具栏，快速向 AI 提问
+- 自动携带页面上下文，让 AI 理解您正在查看的内容
+
+<br>
+
+## 隐私
+
+EasyChatAI 高度重视用户隐私，我们绝不上传或分享任何敏感数据，包括但不限于：
+
+- 本地 Cookie 信息
+- API Key
+- 聊天会话数据
+- 其他个人信息
 
 
 <br>
 <br>
-
-
-## Supported LLMs
-
-
-
-| LLMs | Provider | status |
-| -------- | -------- | -------- |
-| Gpt3.5     | chatgpt.com     | Supported     |
-| Gpt4     | chatgpt.com     | Supported     |
-| Gpt4o     | chatgpt.com     | Supported     |
-| Gpt4     | copilot.microsoft.com     | Supported  |
-| Gemini     | gemini.google.com     | Supported     |
-| Moonshot     | kimi.moonshot.cn     | Supported     |
-| LLama 3    | perplexity.ai     | Supported     |
-| Claude 3 haiku     | perplexity.ai     | Supported     |
-| Gemma-7b    | perplexity.ai     | Supported     |
-| llava-v1.6    | perplexity.ai     | Supported     |
-| Mistral-8×22b| perplexity.ai     | Supported     |
-| Claude 3     | claude.ai     | Soon     |
-
-
-More is coming.
-
-<br>
-
-## Privacy
-
-At EasyChatAI, we prioritize user privacy and take every measure to safeguard your personal information. We never upload or share any sensitive data, including but not limited to:
-
-- Local cookie information
-- Chat session data
-- Account information
-- Etc.
-
-All chat history, settings, and login data are securely stored locally on your device. We never collect or access this information from our servers.
-
-To enhance your EasyChatAI experience, we gather anonymous usage data using GA4 that helps us understand user preferences and optimize our product. This data includes:
-
-- Frequency and duration of AI bot prompts (without capturing prompt content)
-- Response length and usage patterns (without capturing response content)
-
-This anonymous usage data is essential for continuous improvement and does not reveal any personally identifiable information.
-
-<br>
-<br>
-
 
 ---
 
-## For developers
+## 开发者指南
 
+### 开始开发
 
-### Getting started
-
-First, install the dependencies:
+首先，安装必要依赖：
 
 ```bash
 npm install pnpm -g
@@ -112,46 +76,32 @@ npm install pnpm -g
 pnpm install
 ```
 
-Then, start the development server:
+然后，启动开发服务器：
 
 ```bash
 pnpm dev
 ```
 
-Open your browser and load the appropriate development build. For example, if you are developing for the chrome browser, using manifest v3, use: `build/chrome-mv3-dev`.
+打开浏览器并加载相应的开发构建目录（Chrome MV3：`build/chrome-mv3-dev`）。
 
-For further guidance, [visit plasmo Documentation](https://docs.plasmo.com/)
+更多框架说明请[访问 Plasmo 文档](https://docs.plasmo.com/)。
 
-### Making production build
-
-Run the following:
+### 生产构建
 
 ```bash
 pnpm build
 ```
 
-This should create a production bundle for your extension, ready to be zipped and published to the stores.
-
-### Making production(debug) build, which will reserve the logs
-
-Run the following:
+### 调试信息构建
 
 ```bash
-pnpm build:staing
+pnpm build:staging
 ```
 
-### To enable GA4 Measurement protocol
+### 打包发布
 
 ```bash
-mv .env.example .env
+pnpm package
 ```
 
-and then add your GA4 Measurement ID and API Secret in the .env file
-
-
-
-## Community
-
-<a href="https://discord.gg/FXgVQQwP8s">
-    <img src="https://img.shields.io/discord/981138088757690398?label=Discord&logo=discord&logoColor=white&style=for-the-badge" alt="Discord">
-</a>
+<br>

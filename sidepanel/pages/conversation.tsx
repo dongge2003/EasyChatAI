@@ -539,6 +539,7 @@ export const AIMessage = memo(({message, i}: {
             message: ConversationMessage, i: number
         }) => {
     const messageContainerRef = useRef<HTMLDivElement>(null);
+    const {t} = useContext(LocaleContext);
     const {currentBots, setCurrentBots, allModels, saveCurrentBotsKeyLocal} = useContext(ModelManagementContext);
     const [errorModels, setErrorModels] = useState<errorModels[]>([]);
     const [popoverOpen, setPopoverOpen] = useState(false);
