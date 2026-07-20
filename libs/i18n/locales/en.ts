@@ -25,6 +25,7 @@ const en: I18nMessages = {
   "header.chat": "Chat",
   "header.title": "AI Chat",
   "header.newChat": "New Chat",
+  "header.settings": "Settings",
 
   // ============ Sidebar Navigation (Options Layout) ============
   "nav.shortcutMenu": "Shortcut Menu",

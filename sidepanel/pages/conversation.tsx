@@ -172,12 +172,12 @@ const PromptTags = ({ cards, itemClick,onVisibleTagChange }) => {
                 }}>
                     <div className={'w-[1px] h-[25px] me-[2px] tagAnchor'}></div>
                     <div
-                        className={'bg-[#0057FF1A] rounded-[50px] flex flex-row justify-center items-center h-[25px] px-[12px] py-[4px] ms-[8px] cursor-pointer hover:bg-[#0057FF33]'}
+                        className={'bg-accent-light rounded-[50px] flex flex-row justify-center items-center h-[25px] px-[12px] py-[4px] ms-[8px] cursor-pointer hover:bg-accent/20'}
                         onClick={(e) => itemClick(item, index, e)}>
                         {item.imageKey != null && <div className={'w-[16px] h-[16px] mr-[4px] cursor-pointer'}>
-                            {item.itemType === PromptTypes.CUSTOM ? <ItemIcon style={{fontSize: '16px', color: '#0057FF',}}/> : <img className={'w-[16px] h-[16px]'} src={getImageBlueSrc(item.imageKey)} alt={''}/>}
+                            {item.itemType === PromptTypes.CUSTOM ? <ItemIcon style={{fontSize: '16px', color: 'var(--accent)',}}/> : <img className={'w-[16px] h-[16px]'} src={getImageBlueSrc(item.imageKey)} alt={''}/>}
                         </div>}
-                        <div className={'text-[#0057FF] text-[12px] whitespace-nowrap'}>{item.title}</div>
+                        <div className={'text-accent text-[12px] whitespace-nowrap'}>{item.title}</div>
                     </div>
                 </div>;
             })
@@ -231,7 +231,7 @@ const AIError = memo(function ({model, error, start, setCurrentBotResponseMessag
     };
 
     const BlueBtn = ({text,handleClick}:{text: string, handleClick: () => void}) => {
-        return <div onClick={handleClick} className='w-fit cursor-pointer mt-4 px-6 h-[31px] bg-[#0A4DFE] rounded-[8px] text-white text-[14px] font-medium flex items-center justify-center'>{text}</div>;
+        return <div onClick={handleClick} className='w-fit cursor-pointer mt-4 px-6 h-[31px] bg-accent rounded-[8px] text-white text-[14px] font-medium flex items-center justify-center'>{text}</div>;
     };
 
     const switchModel = () => {
@@ -251,7 +251,7 @@ const AIError = memo(function ({model, error, start, setCurrentBotResponseMessag
                     <div className='w-fit'>
                         <CatAnimation/>
                         <div className='mt-4 text-[12px] leading-loose'>{t('error.timeout')}
-                            <u className='cursor-pointer text-[#0A4DFE]' onClick={clickRefresh}> {t('error.timeoutRefresh')}</u>
+                            <u className='cursor-pointer text-accent' onClick={clickRefresh}> {t('error.timeoutRefresh')}</u>
                         </div>
                     </div>;
             break;
@@ -277,7 +277,7 @@ const AIError = memo(function ({model, error, start, setCurrentBotResponseMessag
                     <div className='text-base font-bold mb-2'>{t('error.thirdPartyError')}</div>
                     {error?.message ? <div className='mb-3'>{error?.message}</div> :
                         <div className='mb-3'>{t('error.conversationLimit', {model: name})}</div>}
-                    <u className={"text-[14px] text-[#0A4DFE] cursor-pointer"} onClick={clickRefresh}>{t('error.timeoutRefresh')}</u>
+                    <u className={"text-[14px] text-accent cursor-pointer"} onClick={clickRefresh}>{t('error.timeoutRefresh')}</u>
                 </div>;
             break;
         case ErrorCode.MODEL_INTERNAL_ERROR:
@@ -285,7 +285,7 @@ const AIError = memo(function ({model, error, start, setCurrentBotResponseMessag
                     <div className='w-fit'>
                         <div className='text-base font-bold mb-2'>{t('error.thirdPartyError')}</div>
                         <div className='mb-3'>{error?.message ?? t('error.modelInternalError', {model: name})}</div>
-                        <u className={"text-[14px] text-[#0A4DFE] cursor-pointer"} onClick={clickRefresh}>{t('error.timeoutRefresh')}</u>
+                        <u className={"text-[14px] text-accent cursor-pointer"} onClick={clickRefresh}>{t('error.timeoutRefresh')}</u>
                     </div>;
             break;
         case ErrorCode.UPLOAD_FILE_NOT_SUPPORTED:
@@ -293,14 +293,14 @@ const AIError = memo(function ({model, error, start, setCurrentBotResponseMessag
                     <div className='w-fit'>
                         <div className='text-base font-bold mb-2'>{t('error.thirdPartyError')}</div>
                         <div className='mb-3'>{t('error.uploadNotSupported')}</div>
-                        <u className={"text-[14px] text-[#0A4DFE] cursor-pointer"} onClick={switchModel}>{t('error.switchModel')}</u>
+                        <u className={"text-[14px] text-accent cursor-pointer"} onClick={switchModel}>{t('error.switchModel')}</u>
                     </div>;
             break;
         case ErrorCode.MODEL_NO_PERMISSION:
             errMessage =  <div className='w-fit'>
                 <div className='text-base font-bold mb-2'>{t('error.accessDenied')}</div>
                 <div className='mb-3'>{t('error.noPermission', {model: name})}</div>
-                <u className={"text-[14px] text-[#0A4DFE] cursor-pointer"}>{t('error.switchModel')}</u>
+                <u className={"text-[14px] text-accent cursor-pointer"}>{t('error.switchModel')}</u>
             </div>;
             break;
         case ErrorCode.FILE_OTHER:
@@ -308,7 +308,7 @@ const AIError = memo(function ({model, error, start, setCurrentBotResponseMessag
                     <div className='w-fit'>
                         <div className='text-base font-bold mb-2'>{t('error.thirdPartyError')}</div>
                         <div className='mb-3'>{t('error.fileAnalysisError')}</div>
-                        <u className={"text-[14px] text-[#0A4DFE] cursor-pointer"} onClick={switchModel}>{t('error.switchModel')}</u>
+                        <u className={"text-[14px] text-accent cursor-pointer"} onClick={switchModel}>{t('error.switchModel')}</u>
                     </div>;
             break;
         case ErrorCode.NETWORK_ERROR:
@@ -328,7 +328,7 @@ const AIError = memo(function ({model, error, start, setCurrentBotResponseMessag
         return errMessage;
     };
 
-    return <div className='text-[#5E5E5E]'>
+    return <div className='text-secondary'>
         {getError()}
     </div>;
 });
@@ -486,8 +486,8 @@ const AITextContent = ({bot, message, pref, i}: {
                 {isLastChatInList && <div className="pr-[16px] flex items-center">
                     <img src={activePage == 1 ? ArrowLIcon : ArrowLDeepIcon}
                         className='cursor-pointer w-[6px] h-[10px]' alt="" onClick={() => pageChange('l')}/>
-                    <div className='mx-[8px] text-[12px] text-[#5E5E5E]'>
-                        <span className='text-[#0057FF]'>{activePage}</span>
+                    <div className='mx-[8px] text-[12px] text-secondary'>
+                        <span className='text-accent'>{activePage}</span>
                         <span> / </span>
                         <span className=''>{currentBotResponseMessage.length}</span>
                     </div>
@@ -605,9 +605,9 @@ export const AIMessage = memo(({message, i}: {
         return <div ref={popoverRef}>
             {
                 allModels.current.filter(item => !currentBots.includes(item)).map((model,index) => {
-                    return <div onClick={() => singleModelCheck(model)} key={index} className={`group relative w-[310px] h-10 px-4 box-border  flex justify-between items-center hover:bg-gradient-to-r hover:from-[#E5ECFF]`}>
+                    return <div onClick={() => singleModelCheck(model)} key={index} className={`group relative w-[310px] h-10 px-4 box-border  flex justify-between items-center hover:bg-accent-light`}>
                         <div className='flex items-center justify-start'>
-                            <div className="w-1 h-full bg-[#0A4DFE] absolute left-0 top-0 hidden group-hover:block"/>
+                            <div className="w-1 h-full bg-accent absolute left-0 top-0 hidden group-hover:block"/>
                             <div className='w-4 h-4 mr-2'>
                                 <img className={'w-full h-full'} src={model.logoSrc} alt=""/>
                             </div>
@@ -615,7 +615,7 @@ export const AIMessage = memo(({message, i}: {
                             {model.paidModel &&
                                 <CTooltip title={t('modelCheck.paidModel')}>
                                     <div
-                                        className="h-5 box-border px-2 py-1 rounded bg-[#C2C2C2] bg-opacity-20 text-[10px] text-[#C2C2C2] font-bold">3rd-party
+                                        className="h-5 box-border px-2 py-1 rounded bg-tertiary/20 text-[10px] text-tertiary font-bold">3rd-party
                                     </div>
                                 </CTooltip>
                             }
@@ -625,7 +625,7 @@ export const AIMessage = memo(({message, i}: {
                             {model.supportUploadImage && <CTooltip title={t('modelCheck.supportsImage')}><img className='ml-1' src={IconPic} alt=""/></CTooltip>}
                             {model.maxTokenLimit && <CTooltip title={t('modelCheck.tokenLimit', {tokens: model.maxTokenLimit.toLocaleString()})}>
                                 <div
-                                    className="ml-1 h-5 box-border px-1 py-0.5 rounded bg-[#4948DB1A] bg-opacity-10 text-[12px] text-[#4948DB] font-medium">{Math.round(model.maxTokenLimit / 1000)}k</div>
+                                    className="ml-1 h-5 box-border px-1 py-0.5 rounded bg-accent/10 text-[12px] text-accent font-medium">{Math.round(model.maxTokenLimit / 1000)}k</div>
                             </CTooltip>}
                         </div>
                         {
@@ -645,7 +645,7 @@ export const AIMessage = memo(({message, i}: {
 
             <div className={`${style.contentArea} ${style.l} flex-1 group`}>
                 {/*overflow-x-auto*/}
-                <div className='text-[#333333]'>
+                <div className='text-primary'>
                     <div className='px-4 pt-4 pb-3 bg-white rounded-t-[10px]'>
                         <div className={style.modelTab}>
                             {
@@ -750,11 +750,11 @@ export const UserMessage = ({message}: { message: ConversationMessage }) => {
         <div ref={containerRef} className={style.messageItemOuter + ' justify-end mb-[20px]'}>
             <div className={`${style.contentArea} ${style.r} group`}>
                 <div className='overflow-x-auto text-white rounded-[10px] justify-start'>
-                    <div className='bg-[#4948DB] text-sm p-4'>
+                    <div className='bg-accent text-sm p-4'>
                         {
                             message.data.promptImageTitle &&
                             <div
-                                className="bg-[#333] bg-opacity-50 rounded-[50px] text-[12px] flex items-center px-3 w-fit h-6 " style={{marginBottom:message.data.text?8:0}}>
+                                className="bg-primary/50 rounded-[50px] text-[12px] flex items-center px-3 w-fit h-6 " style={{marginBottom:message.data.text?8:0}}>
                                 {
                                     message.data.promptImageUri && (message.data.promptType === 2 ?
                                         <ItemIcon className='w-4 h-4 text-[13px] text-white text-opacity-80'/> :
@@ -791,13 +791,13 @@ export const UserMessage = ({message}: { message: ConversationMessage }) => {
                                 <div>
                                     <div className={'flex flex-row justify-start items-center overflow-hidden'}>
                                         <div
-                                            className={'w-[48px] h-[48px] flex-shrink-0 ml-[12px] rounded-[8px] border-dashed border-[1px] border-[#0A4DFE] bg-[#E6EDFF] flex justify-center items-center'}>
+                                            className={'w-[48px] h-[48px] flex-shrink-0 ml-[12px] rounded-[8px] border-dashed border-[1px] border-accent bg-accent-light flex justify-center items-center'}>
                                             <div className={'w-[24px] h-[24px] flex justify-center items-end'} style={{backgroundImage: `url(${FileBgIcon})`}}>
-                                                <div className={'flex text-[#0A4DFE] text-[5px] font-[700] overflow-hidden whitespace-nowrap break-all justify-center items-center mb-[3px]'}>{message.data.uploadFile![1].split('.').pop()?.substring(0, 4)}</div>
+                                                <div className={'flex text-accent text-[5px] font-[700] overflow-hidden whitespace-nowrap break-all justify-center items-center mb-[3px]'}>{message.data.uploadFile![1].split('.').pop()?.substring(0, 4)}</div>
                                             </div>
                                         </div>
                                         <div
-                                            className={'text-[#0A4DFE] text-[14px] ml-[16px] line-clamp-1 text-ellipsis break-all pr-[24px]'}>{message.data.uploadFile![1]}</div>
+                                            className={'text-accent text-[14px] ml-[16px] line-clamp-1 text-ellipsis break-all pr-[24px]'}>{message.data.uploadFile![1]}</div>
                                     </div>
                                 </div>
                                 <div className={'flex flex-row-reverse mr-[10px]'}>
@@ -837,7 +837,7 @@ export const UserMessage = ({message}: { message: ConversationMessage }) => {
                                 maxWidth: '400px'
                             }} title={message.data.appendix}>
                                 <div
-                                    className={'cursor-pointer line-clamp-2 text-ellipsis text-[#333333] text-opacity-60 '}>
+                                    className={'cursor-pointer line-clamp-2 text-ellipsis text-primary/60 '}>
                                     {message.data.appendix}
                                 </div>
                             </CTooltip>
@@ -947,7 +947,7 @@ function ConversationContent() {
     const [isUploadAttachment, setIsUploadAttachment] = useState(false);
     const [isUploading, setIsUploading] = useState<[boolean, boolean, string, string, Map<string, string>, FileTypes, File | null]>([false, false, '', '', new Map(), FileTypes.OTHERS, null]);
     const {conversationId} = useContext(ConversationContext);
-    const [uploadBorderColor, setUploadBorderColo] = useState('#C2C2C2');
+    const [uploadBorderColor, setUploadBorderColo] = useState('#E5E7EB');
     const [uploadBackgroundColor, setUploadBackgroundColor] = useState('#FFFFFF');
 
     useEffect(() => {
@@ -987,7 +987,7 @@ function ConversationContent() {
 
     const currentModelView = () => {
         return <div onClick={() => showModelSelector(true)}
-            className={'cursor-pointer rounded-[40px] bg-[#F3F4F9] px-3 text-[12px] h-[25px] flex justify-center items-center'}>
+            className={'cursor-pointer rounded-[40px] bg-surface-subtle px-3 text-[12px] h-[25px] flex justify-center items-center'}>
             {
                 currentBots.length &&
                 currentBots.map(item => {
@@ -1246,7 +1246,7 @@ function ConversationContent() {
             void message.warning(t('conversation.fileUploading'));
             return;
         }
-        setUploadBorderColo('#C2C2C2');
+        setUploadBorderColo('#E5E7EB');
         setIsUploadAttachment(true);
     }
 
@@ -1312,12 +1312,12 @@ function ConversationContent() {
     }
 
     const onUploadEnter = () => {
-        setUploadBorderColo('#0A4DFE');
-        setUploadBackgroundColor('#E6EDFF');
+        setUploadBorderColo('#2563EB');
+        setUploadBackgroundColor('#EFF3FF');
     };
 
     const onUploadLeave = () => {
-        setUploadBorderColo('#C2C2C2');
+        setUploadBorderColo('#E5E7EB');
         setUploadBackgroundColor('#FFFFFF');
     };
 
@@ -1343,7 +1343,7 @@ function ConversationContent() {
                 renderItem={(car, index) => {
                     const ItemIcon = getIconSrc(car.imageKey);
                     return (
-                        <List.Item style={{height: '40px'}} className={'hover:bg-[#F2F5FF] box-border'}
+                        <List.Item style={{height: '40px'}} className={'hover:bg-accent-light box-border'}
                             onClick={(e) => itemClick(car, index, isQuotClick, e)}>
                             <div style={{
                                 display: 'flex',
@@ -1354,14 +1354,14 @@ function ConversationContent() {
                             }}>
                                 <div className={'inline-flex items-center '}>
                                     {car.itemType === PromptTypes.CUSTOM ?
-                                        <ItemIcon style={{fontSize: '16px', color: '#5E5E5E'}}/> :
+                                        <ItemIcon style={{fontSize: '16px', color: 'var(--text-secondary)'}}/> :
                                         <img style={{
                                             height: '16px',
                                             width: '16px'
                                         }} src={getImageSrc(car.imageKey)} alt={''}/>}
                                     <div style={{
                                         fontSize: '13px',
-                                        color: '#5E5E5E',
+                                        color: 'var(--text-secondary)',
                                         paddingLeft: '8px',
                                         maxWidth: '200px',
                                         overflow: 'hidden',
@@ -1389,16 +1389,15 @@ function ConversationContent() {
                 </div>
             </div>
             <div
-                className={'flex flex-col items-center relative bg-white min-h-[97px] w-full rounded-[16px] border-[1px] pb-[4px] border-solid border-[#0A4DFE] cursor-text'}
-                style={{borderColor: inputWarnShow ? '#FE0A36' : '#0A4DFE'}}>
+                className={`flex flex-col items-center relative bg-surface min-h-[97px] w-full rounded-[16px] border pb-[4px] border-solid cursor-text ${inputWarnShow ? 'border-[#FE0A36]' : 'border-subtle focus-within:border-accent'}`}>
                 {isHaveQuotingText && <div className={'flex flex-col items-center w-full'}>
                     <div
-                        className={'bg-[#F3F4F9] rounded-[16] flex w-[calc(100%-8px)] flex-row justify-between my-[4px] mx-[4px] box-border relative'}>
+                        className={'bg-surface-subtle rounded-[16] flex w-[calc(100%-8px)] flex-row justify-between my-[4px] mx-[4px] box-border relative'}>
                         <div className={'flex-col flex justify-start items-start break-words pr-[11px] overflow-hidden'}>
                             <div
-                                className={'ms-[11px] mt-[5px] text-[#5E5E5E] text-[12px] font-[600] line-clamp-1 text-ellipsis w-full'}>{quotingText[0]}</div>
+                                className={'ms-[11px] mt-[5px] text-secondary text-[12px] font-[600] line-clamp-1 text-ellipsis w-full'}>{quotingText[0]}</div>
                             <div
-                                className={'ps-[11px] mt-[1px] text-[#5E5E5E] text-[12px] font-[400] line-clamp-2 text-ellipsis mb-[4px] box-border w-full'}>{quotingText[1]}</div>
+                                className={'ps-[11px] mt-[1px] text-secondary text-[12px] font-[400] line-clamp-2 text-ellipsis mb-[4px] box-border w-full'}>{quotingText[1]}</div>
                         </div>
                         <img className={'w-[16px] h-[16px] cursor-pointer absolute top-[5px] right-[8px]'}
                             src={ChatInputCloseIcon} alt='' onClick={(e) => {
@@ -1425,25 +1424,25 @@ function ConversationContent() {
                                 style={{visibility: (Math.max(...promptVisibleTag) + 1 < cards.length ? 'visible' : 'hidden')}}/>
                         </Popover>
                     </div>
-                    <div className={'w-[calc(100%-16px)] h-[1px] bg-[#F6F6F6] mt-[8px]'}/>
+                    <div className={'w-[calc(100%-16px)] h-[1px] bg-page-bg mt-[8px]'}/>
                 </div>}
                 {isUploading[0] && <div className={'flex flex-col w-full'}>
                     <div
-                        className={'flex flex-row justify-between w-auto m-[8px] h-[56px] rounded-[12px] border-[1px] border-[#F3F4F9] items-center'}>
+                        className={'flex flex-row justify-between w-auto m-[8px] h-[56px] rounded-[12px] border-[1px] border-surface-subtle items-center'}>
                         <div className={'flex flex-row justify-start items-center overflow-hidden'}>
                             <div className={'w-[48px] h-[48px] my-[4px] ml-[4px]'}>
                                 {isUploading[1] ? <div
-                                    className={'w-full h-full border-[1px] border-[#C2C2C2] border-dashed flex justify-center items-center rounded-[8px]'}>
-                                    <LoadingOutlined className={'text-[32px] text-[#0A4DFE]'}/>
+                                    className={'w-full h-full border-[1px] border-tertiary border-dashed flex justify-center items-center rounded-[8px]'}>
+                                    <LoadingOutlined className={'text-[32px] text-accent'}/>
                                 </div> : (isUploading[5] == FileTypes.Image
                                     ?<img className={'w-full h-full rounded-[8px] object-cover'} src={isUploading[2]} alt=''/>
-                                    :<div className={'w-full h-full rounded-[8px] border-dashed border-[1px] border-[#0A4DFE] bg-[#E6EDFF] flex justify-center items-center'}>
+                                    :<div className={'w-full h-full rounded-[8px] border-dashed border-[1px] border-accent bg-accent-light flex justify-center items-center'}>
                                         <div className={'w-[24px] h-[24px] flex justify-center items-end'} style={{backgroundImage:`url(${FileBgIcon})`}}>
-                                            <div className={'flex text-[#0A4DFE] text-[5px] font-[700] overflow-hidden whitespace-nowrap break-all justify-center items-center mb-[3px]'}>{isUploading[3].split('.').pop()?.substring(0,4)}</div>
+                                            <div className={'flex text-accent text-[5px] font-[700] overflow-hidden whitespace-nowrap break-all justify-center items-center mb-[3px]'}>{isUploading[3].split('.').pop()?.substring(0,4)}</div>
                                         </div>
                                     </div>)}
                             </div>
-                            <div className={'text-[#5E5E5E] text-[14px] ml-[16px] line-clamp-1 text-ellipsis max-w-[calc(100%-68px)] break-all'}>{isUploading[3]}</div>
+                            <div className={'text-secondary text-[14px] ml-[16px] line-clamp-1 text-ellipsis max-w-[calc(100%-68px)] break-all'}>{isUploading[3]}</div>
                         </div>
                         <img className={'w-[16px] h-[16px] mx-[20px] cursor-pointer'} src={UploadDeleteIcon} alt='' onClick={(e) => {
                             e.stopPropagation();
@@ -1458,7 +1457,7 @@ function ConversationContent() {
                     <div className={'w-auto mr-[8px]'}>
                         <PromptTags cards={isUploading[5]== FileTypes.Image?imageCards:pdfCards} onVisibleTagChange={()=>{/* do nothing */}} itemClick={(car: any, index: number, e: React.MouseEvent<HTMLDivElement>) => itemClick(car, index, true, e)}></PromptTags>
                     </div>
-                    <div className={'w-[calc(100%-16px)] h-[1px] bg-[#F6F6F6] mt-[8px]'}/>
+                    <div className={'w-[calc(100%-16px)] h-[1px] bg-page-bg mt-[8px]'}/>
                 </div>}
 
                 <Input.TextArea
@@ -1494,30 +1493,30 @@ function ConversationContent() {
                     <img className={'w-[20px] h-[20px] cursor-pointer'} src={SendMsgIcon} alt=''
                         onClick={() => goAskAi()}/>
                     <div
-                        className={'flex justify-center items-center h-[25px] text-[#C2C2C2] bg-[#F3F4F9] rounded-[8px] px-[8px] py-[4px] text-[12px] font-[400] mr-[8px] whitespace-nowrap cursor-pointer'}
+                        className={'flex justify-center items-center h-[25px] text-tertiary bg-surface-subtle rounded-[8px] px-[8px] py-[4px] text-[12px] font-[400] mr-[8px] whitespace-nowrap cursor-pointer'}
                         onClick={() => goAskAi()}>{`⏎ ${t('conversation.askAI')}`}</div>
                 </div>
             </div>
         </div>
         <Modal open={isUploadAttachment} className={'absolute top-[calc(50%-200px)] left-0 right-0 p-0 modelUpload bg-transparent overflow-hidden'} footer={[]} closable={false} width='600px'>
-            <div className={'flex flex-col justify-start w-full h-full bg-[#F3F4F9] rounded-[16px] overflow-hidden'}>
+            <div className={'flex flex-col justify-start w-full h-full bg-surface-subtle rounded-[16px] overflow-hidden'}>
                 <div className={'flex flex-row justify-between items-center px-[16px] mt-[12px]'}>
-                    <div className={'text-[#C2C2C2] text-[16px] font-[700]'}>{t('conversation.uploadFile')}</div>
+                    <div className={'text-tertiary text-[16px] font-[700]'}>{t('conversation.uploadFile')}</div>
                     <img className={'w-[16px] h-[16px] cursor-pointer'} src={UploadCloseIcon} alt='' onClick={(e)=>{
                         e.stopPropagation();
                         setIsUploadAttachment(false);}}/>
                 </div>
                 <div className={'flex flex-col w-auto justify-start bg-white rounded-[16px] ml-[4px] mr-[4px] mb-[4px] mt-[12px]'}>
-                    <div className={'text-[#5E5E5E] text-[14px] mt-[16px] mx-[24px]'}>{t('conversation.uploadTitle')}</div>
+                    <div className={'text-secondary text-[14px] mt-[16px] mx-[24px]'}>{t('conversation.uploadTitle')}</div>
                     <div
                         className={`w-auto m-[16px] border-[1px] border-dashed rounded-[8px] hover:rounded-[8px]`}
                         style={{borderColor: uploadBorderColor,backgroundColor:uploadBackgroundColor}} onMouseEnter={onUploadEnter} onMouseLeave={onUploadLeave} onDragOver={onUploadEnter} onDragLeave={onUploadLeave}>
                         <Dragger {...props} className={'w-auto'} style={{background: "transparent", borderRadius: '8px', borderColor: 'transparent'}}>
                             <p className="ant-upload-drag-icon">
-                                <UploadOutlined className={' w-[32px] h-[32px]'} style={{color: '#C2C2C2'}}/>
+                                <UploadOutlined className={' w-[32px] h-[32px]'} style={{color: 'var(--tertiary)'}}/>
                             </p>
-                            <p className="ant-upload-text text-[#333333]">{t('conversation.dragAndDrop')}</p>
-                            <p className="text-[16px] mb-[4px] text-[#0A4DFE] underline block">{t('conversation.clickToUpload')}</p>
+                            <p className="ant-upload-text text-primary">{t('conversation.dragAndDrop')}</p>
+                            <p className="text-[16px] mb-[4px] text-accent underline block">{t('conversation.clickToUpload')}</p>
                             <p className="ant-upload-hint">{t('conversation.uploadHint')}</p>
                         </Dragger>
                     </div>

@@ -22,8 +22,6 @@ interface ISidePanelContext {
     setNavigation: React.Dispatch<React.SetStateAction<NavigateFunction>>
     userLanguage: string;
     messageApi: MessageInstance,
-    expandMenu: boolean,
-    setExpandMenu: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
 export const SidePanelContext = React.createContext<ISidePanelContext>({} as ISidePanelContext);
@@ -36,7 +34,6 @@ const SidePanelProvider = ({children}: { children: ReactNode }) => {
     const [navigation, setNavigation] = useState<NavigateFunction>();
     const [userLanguage] = useState(navigator.language ?? "english");
     const [messageApi, contextHolder] = message.useMessage();
-    const [expandMenu, setExpandMenu] = useState<boolean>(window.innerWidth > 800);
 
     function getInitDataFromStorage() {
         const storage = new Storage();
@@ -83,14 +80,6 @@ const SidePanelProvider = ({children}: { children: ReactNode }) => {
         } catch (e) {
             Logger.log('connect backend port', e);
         }
-
-        window.addEventListener('resize', function () {
-            if (window.innerWidth > 800) {
-                setExpandMenu(true);
-            }else {
-                setExpandMenu(false);
-            }
-        });
     }, []);
 
     return (
@@ -103,8 +92,6 @@ const SidePanelProvider = ({children}: { children: ReactNode }) => {
             setNavigation,
             userLanguage,
             messageApi,
-            expandMenu,
-            setExpandMenu,
         }}>
             <Fragment>
                 {contextHolder}

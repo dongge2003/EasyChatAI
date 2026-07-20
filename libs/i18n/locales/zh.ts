@@ -23,8 +23,9 @@ const zh: I18nMessages = {
 
   // ============ Header ============
   "header.chat": "聊天",
-  "header.title": "AI 聊天",
+  "header.title": "聊天",
   "header.newChat": "新对话",
+  "header.settings": "设置",
 
   // ============ Sidebar Navigation (Options Layout) ============
   "nav.shortcutMenu": "快捷菜单",

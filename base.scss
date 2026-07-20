@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --page-bg: #F8F9FA;
+  --surface: #FFFFFF;
+  --surface-subtle: #F0F1F3;
+  --accent: #2563EB;
+  --accent-light: #EFF3FF;
+  --text-primary: #111827;
+  --text-secondary: #6B7280;
+  --text-tertiary: #9CA3AF;
+  --border-subtle: #E5E7EB;
+}
+
 .hideScrollBar {
   scrollbar-width: none;
   -ms-overflow-style: none;

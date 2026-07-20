@@ -6,7 +6,8 @@
 }
 
 .conversation {
-    @apply flex overflow-hidden flex-col relative transition-all ltr:pr-0 rtl:pl-0 bg-[#F6F6F6];
+    @apply flex overflow-hidden flex-col relative transition-all ltr:pr-0 rtl:pl-0 bg-page-bg;
+
     .chatList {
         @apply relative mt-4 mb-4 flex-1 overflow-y-auto;
 
@@ -30,7 +31,7 @@
             }
 
             .contentArea {
-                @apply min-w-48  max-w-[800px] relative;
+                @apply min-w-48 max-w-[800px] relative;
                 &:after {
                     content: "";
                     display: block;
@@ -40,35 +41,31 @@
                     position: absolute;
                     top: 16px;
                 }
-
             }
 
             .r:after {
-                @apply  border-l-[#4948DB];
+                @apply border-l-accent;
                 right: -14px;
             }
 
             .l:after {
-                @apply  border-r-white;
+                @apply border-r-surface;
                 left: -14px;
             }
 
-
             .modelTab {
-                @apply w-full  h-[29px] p-[2px] bg-[#F3F4F9] rounded-[50px] flex justify-start text-[12px];
+                @apply w-full h-[29px] p-[2px] bg-surface-subtle rounded-[50px] flex justify-start text-[12px];
 
                 .tabItem {
                     @apply w-[33.3%] h-full flex justify-center items-center cursor-pointer text-[12px] px-2 relative;
                     &.active {
-                        @apply bg-white rounded-[12px];
+                        @apply bg-surface rounded-[12px];
                     }
                     img {
                         @apply mr-[4px];
                     }
                 }
-
             }
-
         }
     }
 
@@ -78,30 +75,31 @@
     }
 
     *::-webkit-scrollbar-thumb {
-        background: #EDEFF7;
+        background: var(--border-subtle);
         border-radius: 2px;
     }
 
     .mainInputArea {
-        @apply px-[8px] pb-[8px] gap-1 bg-white rounded-tl-[20px] rounded-tr-[20px];
+        @apply px-[8px] pb-[8px] gap-1 bg-surface rounded-tl-[20px] rounded-tr-[20px];
 
         .chatInputTopBar {
             @apply flex justify-between mb-[6px] px-1 items-center mt-[16px];
         }
+
         .chatInputArea {
-            @apply flex-col items-center z-10 relative min-h-[97px] w-[100%] rounded-xl border-[1px] flex-1 pb-[4px] border-solid border-[transparent] cursor-text;
+            @apply flex-col items-center z-10 relative min-h-[97px] w-[100%] rounded-xl border-[1px] flex-1 pb-[4px] border-solid border-transparent cursor-text;
 
             .antInput {
-                @apply w-full h-full mt-1 border-[transparent];
+                @apply w-full h-full mt-1 border-transparent;
             }
 
             .inputBottomArea {
-                @apply flex justify-between items-end mt-1 gap-2 px-1 ;
+                @apply flex justify-between items-end mt-1 gap-2 px-1;
             }
         }
     }
 
     .actionButton {
-        @apply w-[28px] h-[28px] flex items-center justify-center hover:bg-[#F2F5FF] rounded-[4px] cursor-pointer;
+        @apply w-[28px] h-[28px] flex items-center justify-center hover:bg-accent-light rounded-[4px] cursor-pointer;
     }
 }
