@@ -282,7 +282,6 @@ const AIError = memo(function ({model, error, start, setCurrentBotResponseMessag
                         Refresh</u>
                 </div>;
             break;
-        case ErrorCode.COPILOT_DISENGAGED:
         case ErrorCode.MODEL_INTERNAL_ERROR:
             errMessage =
                     <div className='w-fit'>
@@ -315,8 +314,6 @@ const AIError = memo(function ({model, error, start, setCurrentBotResponseMessag
                     </div>;
             break;
         case ErrorCode.NETWORK_ERROR:
-        case ErrorCode.COPILOT_WEBSOCKET_ERROR:
-        case ErrorCode.COPILOT_INVALID_REQUEST:
         default:
             errMessage =
                     <div className='w-fit'>

@@ -2,9 +2,6 @@ export enum ErrorCode {
     CONVERSATION_LIMIT = 'CONVERSATION_LIMIT',
     UNKNOWN_ERROR = 'UNKNOWN_ERROR',
     CAPTCHA = 'CAPTCHA',
-    COPILOT_DISENGAGED = 'COPILOT_DISENGAGED',
-    COPILOT_WEBSOCKET_ERROR = 'COPILOT_WEBSOCKET_ERROR',
-    COPILOT_INVALID_REQUEST = 'COPILOT_INVALID_REQUEST',
     NETWORK_ERROR = 'NETWORK_ERROR',
     UNAUTHORIZED = 'UNAUTHORIZED',
     REQUEST_TIMEOUT_ABORT = 'REQUEST_TIMEOUT_ABORT',
@@ -65,8 +62,6 @@ export function getErrorMessage(errorCode: ErrorCode) {
         //     return 'Unauthorized access to Copilot.'
         // case ErrorCode.CAPTCHA:
         //     return 'Please solve the Captcha to access Copilot.'
-    case ErrorCode.COPILOT_INVALID_REQUEST:
-        return 'Please restart the Copilot session.';
         // case ErrorCode.API_KEY_NOT_SET:
         //     return 'API key not set.'
         // case ErrorCode.BARD_EMPTY_RESPONSE:

@@ -18,10 +18,6 @@ export default function Layout() {
         setSelected(id);
     };
 
-    const go = function (path: string) {
-        n(path);
-    };
-
     const ImageTextComponent = ({ imageSrc, imageSrcSelected, text, onClick, className, isSelected }) => (
         <div className={`w-full flex flex-row ${className}`} onClick={onClick}>
             <img src={isSelected? imageSrcSelected : imageSrc} className={'w-[24px] h-[24px'}/>

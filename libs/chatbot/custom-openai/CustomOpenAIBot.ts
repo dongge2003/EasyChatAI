@@ -1,5 +1,5 @@
-import {BotBase, BotSupportedMimeType} from "~libs/chatbot/BotBase";
-import type {BotCompletionParams, IBot} from "~libs/chatbot/IBot";
+import {BotBase} from "~libs/chatbot/BotBase";
+import type {BotCompletionParams, BotConstructorParams, IBot} from "~libs/chatbot/IBot";
 import {ConversationResponse, ResponseMessageType} from "~libs/open-ai/open-ai-interface";
 import {ChatError, ErrorCode} from "~utils/errors";
 import {getCustomProviders} from "~libs/chatbot/custom-openai/types";
@@ -32,7 +32,7 @@ export class CustomOpenAIBot extends BotBase implements IBot {
     model: string;
     supportedUploadTypes: string[] = [];
 
-    constructor(params: ConstructorParameters<typeof BotBase>[0]) {
+    constructor(params: BotConstructorParams) {
         super(params);
         const cls = this.constructor as typeof CustomOpenAIBot;
         this.model = cls._modelNameForCompletion;
@@ -199,6 +199,7 @@ export class CustomOpenAIBot extends BotBase implements IBot {
         let buffer = '';
         let accumulatedContent = '';
 
+        // eslint-disable-next-line no-constant-condition
         while (true) {
             const {done, value} = await reader.read();
             if (done) break;
@@ -243,18 +244,18 @@ export class CustomOpenAIBot extends BotBase implements IBot {
 
     private mapHttpError(status: number, body: string): ChatError {
         switch (status) {
-            case 401:
-                return new ChatError(ErrorCode.UNAUTHORIZED, 'Invalid API key or unauthorized access');
-            case 403:
-                return new ChatError(ErrorCode.MODEL_NO_PERMISSION, 'Access to this model is forbidden');
-            case 429:
-                return new ChatError(ErrorCode.CONVERSATION_LIMIT, 'Rate limit exceeded. Please try again later.');
-            case 500:
-            case 502:
-            case 503:
-                return new ChatError(ErrorCode.MODEL_INTERNAL_ERROR, `Provider returned server error (${status})`);
-            default:
-                return new ChatError(ErrorCode.UNKNOWN_ERROR, `API error (${status}): ${body.slice(0, 200)}`);
+        case 401:
+            return new ChatError(ErrorCode.UNAUTHORIZED, 'Invalid API key or unauthorized access');
+        case 403:
+            return new ChatError(ErrorCode.MODEL_NO_PERMISSION, 'Access to this model is forbidden');
+        case 429:
+            return new ChatError(ErrorCode.CONVERSATION_LIMIT, 'Rate limit exceeded. Please try again later.');
+        case 500:
+        case 502:
+        case 503:
+            return new ChatError(ErrorCode.MODEL_INTERNAL_ERROR, `Provider returned server error (${status})`);
+        default:
+            return new ChatError(ErrorCode.UNKNOWN_ERROR, `API error (${status}): ${body.slice(0, 200)}`);
         }
     }
 }
