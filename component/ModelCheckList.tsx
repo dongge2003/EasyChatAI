@@ -69,10 +69,18 @@ const ModelItems = ({item}: { item: CMsItem }) => {
     };
 
     const labelTip = (item: CMsItem) => {
+        const firstModel = item.models[0];
+        const loginUrl = firstModel.loginUrl;
+        if (!loginUrl) {
+            return <div ref={labelTipRef} className='px-1 py-[6px] text-[14px] text-white text-opacity-60 flex justify-start items-center'>
+                <LockAnimation />
+                <div className='ml-1'>Login not required for this provider.</div>
+            </div>;
+        }
         return <div ref={labelTipRef} className='px-1 py-[6px] text-[14px] text-white text-opacity-60 flex justify-start items-center'>
             <LockAnimation />
             <div className='ml-1'>Log into&nbsp;</ div>
-            <u className='text-white cursor-pointer' onClick={() => {openLogin(item.models[0]);}}>{new URL(item.models[0].loginUrl).hostname}</u>
+            <u className='text-white cursor-pointer' onClick={() => {openLogin(firstModel);}}>{new URL(loginUrl).hostname}</u>
             &nbsp;to use
         </div>;
     };
@@ -152,12 +160,17 @@ const ModelItem = ({model, isLogin, setIsOpenProviderToolTip, getLoginStatus} : 
     };
 
     const modelTip = (model : M) => {
+        const loginUrl = model.loginUrl;
         return <div className='px-1 py-[6px] text-[14px]'>
             <div className="font-bold mb-1">{model.botName}</div>
             <div className="mb-2 text-white text-opacity-60">
-                {modelCanUse ? 'Provided by ' : 'Log into '}
-                <u className='text-white cursor-pointer' onClick={() => {openLogin(model);}}>{new URL(model.loginUrl).hostname}</u>
-                {modelCanUse ?'':' and confirm you can access this model'}
+                {loginUrl ? (modelCanUse ? 'Provided by ' : 'Log into ') : ''}
+                {loginUrl ? (
+                    <u className='text-white cursor-pointer' onClick={() => {openLogin(model);}}>{new URL(loginUrl).hostname}</u>
+                ) : (
+                    <span>API key based</span>
+                )}
+                {loginUrl && !modelCanUse ? ' and confirm you can access this model' : ''}
             </div>
             <div className='text-[12px] text-white text-opacity-60'>{model.desc}</div>
         </div>;
