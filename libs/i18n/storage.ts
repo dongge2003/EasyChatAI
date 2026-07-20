@@ -1,7 +1,7 @@
 import { Storage } from "@plasmohq/storage";
 import type { Locale } from "./types";
 
-const STORAGE_KEY = "brainyai_locale";
+const STORAGE_KEY = "easychatai_locale";
 
 const storage = new Storage();
 

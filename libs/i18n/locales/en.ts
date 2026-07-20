@@ -143,7 +143,7 @@ const en: I18nMessages = {
 
     // ============ Captcha Banner ============
     "captchaBanner.pleaseLogin": "Please log in to send a message and ensure it's sent and replied to successfully",
-    "captchaBanner.backToBrainyAI": "Back to BrainyAI",
+    "captchaBanner.backToEasyChatAI": "Back to EasyChatAI",
 
     // ============ Content Script (Base) ============
     "content.hideUntilNextVisit": "Hide until Next visit",

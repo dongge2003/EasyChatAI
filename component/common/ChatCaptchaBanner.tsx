@@ -62,7 +62,7 @@ export default function ChatCaptchaBanner({windowKey, text, closeWhileShow}: { w
         <div onClick={goBack} className={"flex cursor-pointer justify-center items-center px-[16px] py-[8px] bg-white rounded-[8px]"}>
             <img className={"w-[20px] h-[20px] mr-[12px]"} src={Logo} alt=""/>
             <div className={"mr-[10px] text-black"}>
-                {t('captchaBanner.backToBrainyAI')}
+                {t('captchaBanner.backToEasyChatAI')}
             </div>
             <ArrowRightOutlined style={{color: "black"}}/>
         </div>

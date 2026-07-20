@@ -1,6 +1,6 @@
 {
-  "name": "brainy_ai",
-  "displayName": "BrainyAI",
+  "name": "easy_chat_ai",
+  "displayName": "EasyChatAI",
   "version": "0.0.7",
   "description": "",
   "scripts": {
@@ -79,7 +79,7 @@
       "wss://*/*"
     ],
     "action": {
-      "default_title": "BrainyAI"
+      "default_title": "EasyChatAI"
     },
     "permissions": [
       "declarativeNetRequest",

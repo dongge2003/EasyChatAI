@@ -143,7 +143,7 @@ const zh: I18nMessages = {
 
     // ============ Captcha Banner ============
     "captchaBanner.pleaseLogin": "请登录以发送消息，确保消息正常发送并收到回复",
-    "captchaBanner.backToBrainyAI": "返回 BrainyAI",
+    "captchaBanner.backToEasyChatAI": "返回 EasyChatAI",
 
     // ============ Content Script (Base) ============
     "content.hideUntilNextVisit": "隐藏直到下次访问",
