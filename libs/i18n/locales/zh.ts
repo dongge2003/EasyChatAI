@@ -74,16 +74,10 @@ const zh: I18nMessages = {
 
   // ============ Model Check List ============
   "modelCheck.title": "AI 模型",
-  "modelCheck.modelsRemaining": "还有 {count} 个模型",
   "modelCheck.loginNotRequired": "该提供商无需登录即可使用。",
   "modelCheck.logInto": "登录 {host} 以使用",
   "modelCheck.paidModel": "该模型需要在提供商网站付费使用。",
-  "modelCheck.supportsPDF": "该模型支持 PDF 文档分析。",
-  "modelCheck.supportsImage": "该模型支持图片分析。",
   "modelCheck.tokenLimit": "该模型单次会话最多支持 {tokens} 个 tokens",
-  "modelCheck.providedBy": "由 {host} 提供",
-  "modelCheck.logIntoAction": "登录 {host}",
-  "modelCheck.confirmAccess": "并确认你有权访问该模型",
   "modelCheck.apiKeyBased": "基于 API Key",
   "modelCheck.trySwitching": "尝试切换模型",
 

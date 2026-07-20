@@ -50,9 +50,6 @@ import ErrorBoundary from "antd/lib/alert/ErrorBoundary";
 import type {TextAreaRef} from "antd/es/input/TextArea";
 import {ModelCheckList} from "~component/ModelCheckList";
 import ModelSwitchImg from "data-base64:~assets/model_switch.svg";
-import IconPdf from "data-base64:~assets/icon_pdf.svg";
-import IconPic from "data-base64:~assets/icon_pic.svg";
-import NewTag from "data-base64:~assets/new_tag.svg";
 import markdownit from 'markdown-it';
 import InputAttachmentIcon from "data-base64:~assets/icon_input_attachment.svg";
 import Dragger from "antd/es/upload/Dragger";
@@ -542,19 +539,13 @@ export const AIMessage = memo(({message, i}: {
             message: ConversationMessage, i: number
         }) => {
     const messageContainerRef = useRef<HTMLDivElement>(null);
-    const [, setModelTab] = useState<Ms>([]);
-    const [activeTab, setActiveTab] = useState(0);
-    const {currentBots,setCurrentBots, allModels, saveCurrentBotsKeyLocal} = useContext(ModelManagementContext);
+    const {currentBots, setCurrentBots, allModels, saveCurrentBotsKeyLocal} = useContext(ModelManagementContext);
     const [errorModels, setErrorModels] = useState<errorModels[]>([]);
-    const [botProviders, setBotProviders] = useState<Ms>(message.botProviders || []);
-    const {messages} = useContext(ConversationContext);
     const [popoverOpen, setPopoverOpen] = useState(false);
     const switchRef = useRef<HTMLImageElement>(null);
     const popoverRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        setModelTab(currentBots);
-
         EventBus.on('errorManagement', (errorShow: boolean, model: M) => {
             if (model) {
                 if (errorShow) {
@@ -576,125 +567,71 @@ export const AIMessage = memo(({message, i}: {
         });
     }, []);
 
-    const handleTabChange = (index: number) => {
-        setActiveTab(index);
-    };
-
-    const singleModelCheck = async (model: M) => {
+    const switchModel = async (model: M) => {
         setErrorModels((pre) => pre.filter(item => item.modelName !== model.botName));
-
-        setCurrentBots(pre => {
-            return pre.map((item, i) => {
-                if (i === activeTab) {
-                    return model;
-                }
-                return item;
-            });
-        });
-
-        setBotProviders(await getLatestState(setCurrentBots));
-
-        message.botProviders = await getLatestState(setCurrentBots);
-
+        setCurrentBots([model]);
         saveCurrentBotsKeyLocal();
-
         setPopoverOpen(false);
     };
 
     const popoverContent = () => {
         return <div ref={popoverRef}>
             {
-                allModels.current.filter(item => !currentBots.includes(item)).map((model,index) => {
-                    return <div onClick={() => singleModelCheck(model)} key={index} className={`group relative w-[310px] h-10 px-4 box-border  flex justify-between items-center hover:bg-accent-light`}>
-                        <div className='flex items-center justify-start'>
-                            <div className="w-1 h-full bg-accent absolute left-0 top-0 hidden group-hover:block"/>
-                            <div className='w-4 h-4 mr-2'>
+                allModels.current.filter(item => item.botName !== currentBots[0]?.botName).map((model, index) => {
+                    return <div onClick={() => switchModel(model)} key={index}
+                        className={`group relative w-[240px] h-8 px-3 box-border flex justify-between items-center hover:bg-accent-light cursor-pointer`}>
+                        <div className='flex items-center justify-start overflow-hidden'>
+                            <div className="w-0.5 h-4 bg-accent absolute left-0 top-1/2 -translate-y-1/2 hidden group-hover:block"/>
+                            <div className='w-4 h-4 mr-2 flex-shrink-0'>
                                 <img className={'w-full h-full'} src={model.logoSrc} alt=""/>
                             </div>
-                            <span className='mr-1 text-[14px]'>{model.botName}</span>
-                            {model.paidModel &&
-                                <CTooltip title={t('modelCheck.paidModel')}>
-                                    <div
-                                        className="h-5 box-border px-2 py-1 rounded bg-tertiary/20 text-[10px] text-tertiary font-bold">3rd-party
-                                    </div>
-                                </CTooltip>
-                            }
+                            <span className='text-[13px] truncate'>{model.botName}</span>
                         </div>
-                        <div className="flex justify-end items-center">
-                            {model.supportUploadPDF && <CTooltip title={t('modelCheck.supportsPDF')}><img className='ml-1' src={IconPdf} alt=""/></CTooltip>}
-                            {model.supportUploadImage && <CTooltip title={t('modelCheck.supportsImage')}><img className='ml-1' src={IconPic} alt=""/></CTooltip>}
-                            {model.maxTokenLimit && <CTooltip title={t('modelCheck.tokenLimit', {tokens: model.maxTokenLimit.toLocaleString()})}>
-                                <div
-                                    className="ml-1 h-5 box-border px-1 py-0.5 rounded bg-accent/10 text-[12px] text-accent font-medium">{Math.round(model.maxTokenLimit / 1000)}k</div>
-                            </CTooltip>}
-                        </div>
-                        {
-                            model.newModel && <img src={NewTag} className='w-6 h-6 absolute right-0 top-0' alt=""/>
-                        }
                     </div>;
                 })
             }
         </div>;
     };
 
+    const currentModel = currentBots[0];
+    const hasError = errorModels.some(item => item.modelName === currentModel?.botName);
+
     return (
         <div ref={messageContainerRef} className={style.messageItemOuter + ' justify-start mb-[20px]'}>
-            {/*<div className={style.roleIconBox + ' mr-[8px]'}>*/}
-            {/*    <img className={style.aiIcon} src={AIAvatar} alt=""/>*/}
-            {/*</div>*/}
-
             <div className={`${style.contentArea} ${style.l} flex-1 group`}>
-                {/*overflow-x-auto*/}
                 <div className='text-primary'>
                     <div className='px-4 pt-4 pb-3 bg-white rounded-t-[10px]'>
-                        <div className={style.modelTab}>
-                            {
-                                botProviders.map((Bot, index) => {
-                                    return (
-                                        <div onClick={() => handleTabChange(index)} key={index}
-                                            className={`${style.tabItem} ${index === activeTab ? style.active : ''}`}>
-                                            <Tooltip title={Bot.botName} placement={"top"}>
-                                                <div className='flex items-center overflow-hidden'>
-                                                    <img className='w-4 h-4' src={Bot.logoSrc} alt=""/>
-                                                    <div className='truncate'>{Bot.botName}</div>
-                                                </div>
+                        {currentModel && (
+                            <div className="flex items-center justify-between mb-2">
+                                <div className="flex items-center">
+                                    <img className='w-4 h-4 mr-1.5' src={currentModel.logoSrc} alt=""/>
+                                    <span className='text-[12px] text-[#666]'>{currentModel.botName}</span>
+                                </div>
+                                {hasError && errorModels.map((item) => (
+                                    item.modelName === currentModel.botName && (
+                                        <div key={item.modelName} className="relative">
+                                            <Tooltip title={t('modelCheck.trySwitching')}>
+                                                <Popover overlayClassName='modelPopover'
+                                                    open={popoverOpen}
+                                                    content={popoverContent} title={null}
+                                                    trigger={'click'}>
+                                                    <img ref={switchRef} className='w-5 h-5 cursor-pointer'
+                                                        src={ModelSwitchImg} onClick={() => setPopoverOpen(true)}
+                                                        alt=""/>
+                                                </Popover>
                                             </Tooltip>
-                                            {messages.length - 1 === i &&
-                                                errorModels.map((item) => {
-                                                    return (
-                                                        item.modelName === Bot.botName && index === activeTab &&
-                                                        <div
-                                                            key={item.modelName}
-                                                            className="absolute w-6 h-6 top-[-10px] right-[-6px]">
-                                                            <Tooltip title={t('modelCheck.trySwitching')}>
-                                                                <Popover overlayClassName='modelPopover'
-                                                                    open={popoverOpen}
-                                                                    content={popoverContent} title={null}
-                                                                    trigger={'click'}>
-                                                                    <img ref={switchRef} className='w-6 h-6' src={ModelSwitchImg} onClick={() => setPopoverOpen(true)}
-                                                                        alt=""/>
-                                                                </Popover>
-                                                            </Tooltip>
-                                                        </div>
-                                                    );
-                                                })
-                                            }
                                         </div>
                                     )
-                                    ;
-                                })
-                            }
-                        </div>
+                                ))}
+                            </div>
+                        )}
+                        {currentModel && (
+                            <AITextContent key={currentModel.botName}
+                                bot={currentModel}
+                                message={message}
+                                pref={messageContainerRef} i={i}/>
+                        )}
                     </div>
-                    {
-                        botProviders.map((Bot, index) => {
-                            return <div key={index}>
-                                <div className={activeTab === index ? 'block' : 'hidden'}>
-                                    <AITextContent key={Bot.botName} bot={Bot} message={message} pref={messageContainerRef} i={i}/>
-                                </div>
-                            </div>;
-                        })
-                    }
                 </div>
             </div>
         </div>
@@ -973,39 +910,26 @@ function ConversationContent() {
         }
     }
 
-    const getModelLoginTag = function (model) {
-        return model.requireLogin ? t('conversation.loginRequired') : t('conversation.noLoginRequired');
-    };
 
-    const modelSelectorModal = (
-        <Modal destroyOnClose className='modelModal' title={null} closeIcon={false} width={600}
-            style={{top: 60, bottom: 0, }} footer={null}
-            open={modelSelectorOpen} onCancel={() => handleOpenChange(false)}>
-            <ModelCheckList onClose={() => handleOpenChange(false)} />
-        </Modal>
+    const modelSelectorPopover = (
+        <Popover overlayClassName='modelSelectorPopover'
+            open={modelSelectorOpen}
+            onOpenChange={handleOpenChange}
+            trigger="click"
+            placement="top"
+            content={<ModelCheckList onClose={() => handleOpenChange(false)} />}>
+            <div
+                className={'cursor-pointer rounded-[40px] bg-surface-subtle px-3 text-[12px] h-[25px] flex justify-center items-center'}>
+                {currentBots[0] && (
+                    <>
+                        <img className={'mr-1.5 w-[16px] h-[16px]'} src={currentBots[0].logoSrc} alt=''/>
+                        <span>{currentBots[0].botName}</span>
+                    </>
+                )}
+                <CaretDownOutlined className={'ml-[4px]'}/>
+            </div>
+        </Popover>
     );
-
-    const currentModelView = () => {
-        return <div onClick={() => showModelSelector(true)}
-            className={'cursor-pointer rounded-[40px] bg-surface-subtle px-3 text-[12px] h-[25px] flex justify-center items-center'}>
-            {
-                currentBots.length &&
-                currentBots.map(item => {
-                    return (
-                        <div key={item.botName} className={'flex justify-center items-center'}>
-                            <Tooltip title={item.botName} placement={"top"}>
-                                <img className={'mr-2 w-[16px] h-[16px]'}
-                                    src={item.logoSrc} alt=''/>
-                            </Tooltip>
-
-                            {currentBots.length === 1 && `${item.botName}(${getModelLoginTag(item)})`}
-                        </div>
-                    );
-                })
-            }
-            <CaretDownOutlined className={'ml-[4px]'}/>
-        </div>;
-    };
 
     async function showModelSelector(isShow: boolean) {
         const isUploadingInfo = await getLatestState(setIsUploading);
@@ -1383,8 +1307,7 @@ function ConversationContent() {
         <div className={style.mainInputArea}>
             <div className={style.chatInputTopBar}>
                 <div className={'flex flex-row justify-start items-center'}>
-                    {modelSelectorModal}
-                    {currentModelView()}
+                    {modelSelectorPopover}
                     <img src={InputAttachmentIcon} alt='' className={'w-[16px] h-[16px] ms-[12px] cursor-pointer'} onClick={() => showUploadFile()}/>
                 </div>
             </div>

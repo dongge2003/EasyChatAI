@@ -53,19 +53,6 @@
                 left: -14px;
             }
 
-            .modelTab {
-                @apply w-full h-[29px] p-[2px] bg-surface-subtle rounded-[50px] flex justify-start text-[12px];
-
-                .tabItem {
-                    @apply w-[33.3%] h-full flex justify-center items-center cursor-pointer text-[12px] px-2 relative;
-                    &.active {
-                        @apply bg-surface rounded-[12px];
-                    }
-                    img {
-                        @apply mr-[4px];
-                    }
-                }
-            }
         }
     }
 

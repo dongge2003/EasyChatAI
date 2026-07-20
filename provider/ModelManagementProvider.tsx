@@ -69,7 +69,14 @@ export default function ModelManagementProvider({children}) {
         categoryModels.current = combinedCategory;
 
         // If currentBots contains a custom model that was removed, filter it out
-        setCurrentBots(prev => prev.filter(m => combinedAll.includes(m)));
+        setCurrentBots(prev => {
+            const filtered = prev.filter(m => combinedAll.includes(m));
+            // Fall back to first available model if the selected one was removed
+            if (filtered.length === 0 && combinedAll.length > 0) {
+                return [combinedAll[0]];
+            }
+            return filtered;
+        });
 
         Logger.log('Custom models refreshed:', combinedAll.length, 'models');
     }, []);
@@ -94,7 +101,9 @@ export default function ModelManagementProvider({children}) {
                 });
 
                 if (arr.length) {
-                    setCurrentBots(arr);
+                    // Single-model: only use the first resolved model
+                    // (handles backward compatibility with old multi-model storage)
+                    setCurrentBots([arr[0]]);
                 } else {
                     setCurrentBots(defaultModels);
                 }

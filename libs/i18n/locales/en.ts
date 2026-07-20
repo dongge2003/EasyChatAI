@@ -74,16 +74,10 @@ const en: I18nMessages = {
 
   // ============ Model Check List ============
   "modelCheck.title": "AI Models",
-  "modelCheck.modelsRemaining": "{count} models remaining",
   "modelCheck.loginNotRequired": "Login not required for this provider.",
   "modelCheck.logInto": "Log into {host} to use",
   "modelCheck.paidModel": "This model needs to be paid at the provider's website.",
-  "modelCheck.supportsPDF": "This model can analyze PDF document.",
-  "modelCheck.supportsImage": "This model can analyze image.",
   "modelCheck.tokenLimit": "This model supports up to {tokens} tokens in a single session",
-  "modelCheck.providedBy": "Provided by {host}",
-  "modelCheck.logIntoAction": "Log into {host}",
-  "modelCheck.confirmAccess": "and confirm you can access this model",
   "modelCheck.apiKeyBased": "API key based",
   "modelCheck.trySwitching": "Try switching models",
 
